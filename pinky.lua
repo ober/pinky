@@ -34,19 +34,23 @@ function report_disk()
 end
 
 function report_proc()
-   return exec_command("ps", nil, 6, " +")
+   return exec_command("ps auxwww", nil, 1, " +")
 end
 
 function report_net()
-   return exec_command("netstat -an", nil, 6, " +")
+   return exec_command("netstat -an", nil, 1, " +")
+end
+
+function report_mem()
+   return exec_command("free -m", nil, 1, " +")
 end
 
 function reports(check_type)
    pinky_method = "report" .. "_" .. check_type
    if type(_M[pinky_method]) == "function" then
-      return _M[pinky_method]()
+      return json.encode(_M[pinky_method]())
    else
-      return "Ummm Brain, we have no method called " .. pinky_method .. " And it's really " .. type(pinky_method)
+      return "Ummm Brain, we have no method called " .. pinky_method
    end
 end
 
@@ -68,8 +72,4 @@ function split(pString, pPattern)
       table.insert(Table, cap)
    end
    return Table
-end
-
-function disk_json()
-   return json.encode(reports("disk"))
 end
