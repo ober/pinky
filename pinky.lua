@@ -33,8 +33,12 @@ function report_disk()
    return out
 end
 
-function reportProc()
+function report_proc()
    return exec_command("ps", nil, 6, " +")
+end
+
+function report_net()
+   return exec_command("netstat -an", nil, 6, " +")
 end
 
 function reports(check_type)
@@ -46,7 +50,7 @@ function reports(check_type)
    end
 end
 
--- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-lua
+-- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
 function split(pString, pPattern)
    local Table = {}  -- NOTE: use {n = 0} in Lua-5.0
    local fpat = "(.-)" .. pPattern
