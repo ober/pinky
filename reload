@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd ~/nginx-accelerator/
+pkill -9 nginx
+./nginx/start
+tail -f nginx/logs/error* &
+curl http://localhost:8080/pinky
