@@ -17,19 +17,41 @@ function exec_command(command,fields,key_field,sep)
    if cmd_out then
       for line in cmd_out:lines() do
          line_array = split(line, sep)
-         out_table[line_array[key_field]] = line
+         out_table[line_array[key_field]] = line_array
       end
-      return out_table
+      -- cmd_out.close
+      if fields then
+         return return_fields(out_table, fields)
+      else
+         return out_table
+      end
    else
       return cmd_err
    end
 end
 
+function return_fields(in_table,fields)
+   out_table = {}
+   for k,v in pairs(in_table) do
+      for I = 1, #fields do
+         if v[I] then
+            if out_table[k] then
+               out_table[k].insert(v[I])
+            else
+               out_table[k] = { v[I] }
+            end
+         end
+      end
+      -- out_table[k] = v
+   end
+   return out_table
+end
+
 function report_disk()
    -- Disk report.
    -- Return the output of df(1)
-   out = exec_command("df", nil, 6, " +")
-   out.Mounted = nil -- remove header
+   out = exec_command("df", {1,2,3,4,5,6}, 6, " +")
+   -- out.Mounted = nil -- remove header
    return out
 end
 
@@ -42,7 +64,11 @@ function report_net()
 end
 
 function report_mem()
-   return exec_command("free -m", nil, 1, " +")
+   -- call free(1) -m and return values
+   -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
+   out = exec_command("/usr/bin/free -m", nil, 1, " +")
+   out.total = nil
+   return out
 end
 
 function reports(check_type)
