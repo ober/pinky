@@ -36,7 +36,7 @@ function return_fields(in_table,fields)
       for I = 1, #fields do
          if v[I] then
             if out_table[k] then
-               out_table[k].insert(v[I])
+               table.insert(out_table[k],v[I])
             else
                out_table[k] = { v[I] }
             end
@@ -50,8 +50,9 @@ end
 function report_disk()
    -- Disk report.
    -- Return the output of df(1)
-   out = exec_command("df", {1,2,3,4,5,6}, 6, " +")
-   -- out.Mounted = nil -- remove header
+   -- Fields
+   out = exec_command("df", {1,2,3,4,5}, 6, " +")
+   out.Mounted = nil -- remove header
    return out
 end
 
