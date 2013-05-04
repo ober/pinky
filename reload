@@ -1,7 +1,22 @@
 #!/bin/bash
 
 cd ~/nginx-accelerator/
-pkill -9 nginx
+pkill -9 nginx 2>&1 > /dev/null
 ./nginx/start
 tail -f nginx/logs/error* &
-curl http://localhost:8080/pinky
+# echo "----------- disk"
+# curl http://localhost:8080/pinky/disk 2>/dev/null|tr "|" "\n"
+# echo "----------- mem"
+# curl http://localhost:8080/pinky/mem
+# echo "----------- net"
+# curl http://localhost:8080/pinky/net
+# echo "----------- ps"
+# curl http://localhost:8080/pinky/proc
+echo "----------- lua"
+curl http://localhost:8080/pinky/lua_running
+echo "----------- opera"
+curl http://localhost:8080/pinky/opera_running
+echo "----------- ssh port"
+curl http://localhost:8080/pinky/port_ssh
+echo "----------- 8080 port"
+curl http://localhost:8080/pinky/port_8080
