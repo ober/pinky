@@ -51,7 +51,6 @@ function return_fields(in_table,fields)
             end
          end
       end
-      -- out_table[k] = v
    end
    return out_table
 end
@@ -59,7 +58,6 @@ end
 function report_disk()
    -- Disk report.
    -- Return the output of df(1)
-   -- Fields
    out = exec_command_tokenize("/bin/df", {1,2,3,4,5}, 6, " +")
    out.Mounted = nil -- remove header
    return out
@@ -109,10 +107,10 @@ function alert_check_port(host,port)
       elseif string.find(nc,success) then
          return "OK"
       else
-         return "UNKNOWN:" .. nc .. "-"
+         return "UNKNOWN:" .. nc
       end
    else
-      return type(nc)
+      return "Error running nc returned nil"
    end
 end
 
