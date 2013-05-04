@@ -11,7 +11,16 @@ debug = function(kind, msg)
    return ngx.log(ngx.DEBUG, msg)
 end
 
-function exec_command(command,fields,key_field,sep)
+function exec_command(command)
+   local cmd_out, cmd_err = io.popen(command)
+   local out = ""
+   for line in cmd_out:lines() do
+      out = out .. line
+   end
+   return out
+end
+
+function exec_command_tokenize(command,fields,key_field,sep)
    local out_table = {}
    local cmd_out, cmd_err = io.popen(command)
    if cmd_out then
@@ -51,25 +60,60 @@ function report_disk()
    -- Disk report.
    -- Return the output of df(1)
    -- Fields
-   out = exec_command("df", {1,2,3,4,5}, 6, " +")
+   out = exec_command_tokenize("/bin/df", {1,2,3,4,5}, 6, " +")
    out.Mounted = nil -- remove header
    return out
 end
 
 function report_proc()
-   return exec_command("ps auxwww", nil, 1, " +")
+   return exec_command_tokenize("/bin/ps auxwww", nil, 11, " +")
 end
 
 function report_net()
-   return exec_command("netstat -an", nil, 1, " +")
+   return exec_command_tokenize("/usr/bin/netstat -an", nil, 1, " +")
 end
 
 function report_mem()
    -- call free(1) -m and return values
    -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   out = exec_command("/usr/bin/free -m", nil, 1, " +")
+   out = exec_command_tokenize("/usr/bin/free -m", {1,2,3,4,5,6}, 1, " +")
    out.total = nil
    return out
+end
+
+function report_vm()
+   -- call free(1) -m and return values
+   -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
+   out = exec_command_tokenize("/usr/bin/vmstat -s", {1,2,3,4,5,6}, {1,2}, " +")
+   out.total = nil
+   return out
+end
+
+function alert_check_process(app)
+   local ps =  exec_command_tokenize("/bin/ps auxwww", nil, 11, " +")
+   if ps[app] then
+      return "OK"
+   else
+      return "FAIL"
+   end
+end
+
+function alert_check_port(host,port)
+   local cmd = "/bin/nc -v -z -w 1 " .. host .. " " .. port .. " 2>&1"
+   local nc = exec_command(cmd)
+   local success = "succeeded!"
+   local failure = "failed: Connection refused"
+   if nc then
+      if string.find(nc,failure) then
+         return "FAIL"
+      elseif string.find(nc,success) then
+         return "OK"
+      else
+         return "UNKNOWN:" .. nc .. "-"
+      end
+   else
+      return type(nc)
+   end
 end
 
 function reports(check_type)
