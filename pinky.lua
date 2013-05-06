@@ -1,8 +1,7 @@
 module("pinky", package.seeall)
 local json = require 'cjson'
 
-local debug
-debug = function(kind, msg)
+local function debug (kind, msg)
    if msg then
       msg = kind .. ": " .. msg
    else
@@ -11,28 +10,29 @@ debug = function(kind, msg)
    return ngx.log(ngx.DEBUG, msg)
 end
 
-function exec_command(command)
-   local cmd_out, cmd_err = io.popen(command)
-   local out = ""
-   for line in cmd_out:lines() do
-      out = out .. line
-   end
-   return out
-end
-
-function exec_command_tokenize(command,fields,key_field,sep)
+unction exec_command(command,fields,key_field,sep,tokenize)
    local out_table = {}
+   local out = ""
    local cmd_out, cmd_err = io.popen(command)
    if cmd_out then
+
       for line in cmd_out:lines() do
-         line_array = split(line, sep)
-         out_table[line_array[key_field]] = line_array
+         if tokenize then
+            line_array = split(line, sep)
+            out_table[line_array[key_field]] = line_array
+         else
+            out = out .. line
+         end
       end
       -- cmd_out.close
-      if fields then
-         return return_fields(out_table, fields)
+      if tokenize then
+         if fields then
+            return return_fields(out_table, fields)
+         else
+            return out_table
+         end
       else
-         return out_table
+         return out
       end
    else
       return cmd_err
@@ -58,23 +58,23 @@ end
 function report_disk()
    -- Disk report.
    -- Return the output of df(1)
-   out = exec_command_tokenize("/bin/df", {1,2,3,4,5}, 6, " +")
+   out = exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
    out.Mounted = nil -- remove header
    return out
 end
 
 function report_proc()
-   return exec_command_tokenize("/bin/ps auxwww", nil, 11, " +")
+   return exec_command("/bin/ps auxwww", nil, 11, " +",true)
 end
 
 function report_net()
-   return exec_command_tokenize("/usr/bin/netstat -an", nil, 1, " +")
+   return exec_command("/bin/netstat -an", nil, 1, " +",true)
 end
 
 function report_mem()
    -- call free(1) -m and return values
    -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   out = exec_command_tokenize("/usr/bin/free -m", {1,2,3,4,5,6}, 1, " +")
+   out = exec_command("/usr/bin/free -m", {1,2,3,4,5,6}, 1, " +", true)
    out.total = nil
    return out
 end
@@ -82,13 +82,13 @@ end
 function report_vm()
    -- call free(1) -m and return values
    -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   out = exec_command_tokenize("/usr/bin/vmstat -s", {1,2,3,4,5,6}, {1,2}, " +")
+   out = exec_command("/usr/bin/vmstat -s", {1,2,3,4,5,6}, {1,2}, " +", true)
    out.total = nil
    return out
 end
 
 function alert_check_process(app)
-   local ps =  exec_command_tokenize("/bin/ps auxwww", nil, 11, " +")
+   local ps =  exec_command("/bin/ps auxwww", nil, 11, " +", true)
    if ps[app] then
       return "OK"
    else
