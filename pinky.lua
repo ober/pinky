@@ -10,12 +10,26 @@ local function debug (kind, msg)
    return ngx.log(ngx.DEBUG, msg)
 end
 
+function file_exists(filename)
+   local fd = io.open(filename,"r")
+   if fd then
+      io.close(fd)
+      return true
+   else
+      return false
+   end
+end
+
 function exec_command(command,fields,key_field,sep,tokenize)
    local out_table = {}
    local out = ""
+
+   if command and not file_exists(split(command, " ")[1]) then
+      return "Error: " .. split(command," ")[1] .. " could not be found"
+   end
+
    local cmd_out, cmd_err = io.popen(command)
    if cmd_out then
-
       for line in cmd_out:lines() do
          if tokenize then
             line_array = split(line, sep)
@@ -24,7 +38,6 @@ function exec_command(command,fields,key_field,sep,tokenize)
             out = out .. line
          end
       end
-      -- cmd_out.close
       if tokenize then
          if fields then
             return return_fields(out_table, fields)
@@ -53,6 +66,17 @@ function return_fields(in_table,fields)
       end
    end
    return out_table
+end
+
+function show_functions(module)
+   out = ""
+   local json = require 'cjson';
+   for k,v in pairs(json)   do
+      if type(v)=='function' then
+         out = out ..  k .. "\n"
+      end
+   end
+   return out
 end
 
 function report_disk()
@@ -141,4 +165,10 @@ function split(pString, pPattern)
       table.insert(Table, cap)
    end
    return Table
+end
+
+-- tests to be put into their own file
+
+function test_nxfile()
+   return exec_command("/usr/foobar/lala auxwww", nil, 11," +",true)
 end
