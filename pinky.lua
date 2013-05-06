@@ -10,7 +10,7 @@ local function debug (kind, msg)
    return ngx.log(ngx.DEBUG, msg)
 end
 
-unction exec_command(command,fields,key_field,sep,tokenize)
+function exec_command(command,fields,key_field,sep,tokenize)
    local out_table = {}
    local out = ""
    local cmd_out, cmd_err = io.popen(command)
