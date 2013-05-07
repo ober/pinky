@@ -15,8 +15,7 @@ end
 
 function test_exec_command_uptime()
    out = pinky.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
-   assert_not_nil(out)
-   assert_equal({},is_table(out))
+   assert_equal("table",type(out)) -- XXX ToxicFrog
    -- is_table(nil)
    -- out = json.decode(pinky.exec_command("/bin/df",{1},1," ",true))
    -- assert_equal("table", type(out), "Test exec_command brings back table")
