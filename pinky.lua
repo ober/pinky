@@ -11,10 +11,14 @@ local function debug (kind, msg)
 end
 
 function file_exists(filename)
-   local fd = io.open(filename,"r")
-   if fd then
-      io.close(fd)
-      return true
+   if filename then
+      local fd = io.open(filename,"r")
+      if fd then
+         io.close(fd)
+         return true
+      else
+         return false
+      end
    else
       return false
    end

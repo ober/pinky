@@ -13,11 +13,26 @@ function test_exec_command_yes()
    assert_equal("y" ,pinky.exec_command("/usr/bin/yes | head -n 1"), "Test exec_command on yes cmd")
 end
 
-function test_exec_command_df()
+function test_exec_command_df1()
    out = pinky.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
    assert_table(out)
+end
+
+function test_exec_command_df2()
+   out = pinky.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
    assert_equal("Filesystem", out.Mounted[1])
 end
+
+function test_exec_command_untokenized()
+   out = pinky.exec_command("/bin/echo HELLO BRAIN", nil,nil," +",nil)
+   assert_equal("HELLO BRAIN", out)
+end
+
+function test_exec_command_untokenized2()
+   out = pinky.exec_command("/bin/echo HELLO BRAIN", {1,2},1," +",true)
+   assert_equal("HELLO BRAIN", out.HELLO[1] .. " " .. out.HELLO[2] )
+end
+
 
 -- file_exists
 function test_file_exists_tmp()
@@ -41,4 +56,12 @@ end
 -- tests
 function test_file_exists_nxfile()
    assert_false(pinky.file_exists("/usr/foobar/lala auxwww"))
+end
+
+function test_file_exists_tmp()
+   assert_true(pinky.file_exists("/tmp"))
+end
+
+function test_file_exists_no_args()
+   assert_false(pinky.file_exists())
 end
