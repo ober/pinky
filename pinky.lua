@@ -71,7 +71,7 @@ end
 function show_functions(module)
    out = ""
    local json = require 'cjson';
-   for k,v in pairs(json)   do
+   for k,v in pairs(json) do
       if type(v)=='function' then
          out = out ..  k .. "\n"
       end
@@ -149,6 +149,9 @@ end
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
 function split(pString, pPattern)
+   if not pString or not pPattern then
+      return "pString or pPattern were nil"
+   end
    local Table = {}  -- NOTE: use {n = 0} in Lua-5.0
    local fpat = "(.-)" .. pPattern
    local last_end = 1
@@ -165,10 +168,4 @@ function split(pString, pPattern)
       table.insert(Table, cap)
    end
    return Table
-end
-
--- tests to be put into their own file
-
-function test_nxfile()
-   return exec_command("/usr/foobar/lala auxwww", nil, 11," +",true)
 end

@@ -1,0 +1,6 @@
+* Table for all endpoint monitors and arguments
+
+| Base     | Arguments | Format |
+|----------+-----------+--------|
+| /reports |           |        |
+|   n      |           |        |

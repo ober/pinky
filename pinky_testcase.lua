@@ -2,7 +2,7 @@ require "lunit"
 local pinky = require "pinky"
 local json = require 'cjson'
 
-module( "pinky_testcase", lunit.testcase )
+module( "pinky_testcase", lunit.testcase, package.seeall )
 
 -- exec_command
 function test_exec_command_nxfile()
@@ -13,12 +13,10 @@ function test_exec_command_yes()
    assert_equal("y" ,pinky.exec_command("/usr/bin/yes | head -n 1"), "Test exec_command on yes cmd")
 end
 
-function test_exec_command_uptime()
+function test_exec_command_df()
    out = pinky.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
-   assert_equal("table",type(out)) -- XXX ToxicFrog
-   -- is_table(nil)
-   -- out = json.decode(pinky.exec_command("/bin/df",{1},1," ",true))
-   -- assert_equal("table", type(out), "Test exec_command brings back table")
+   assert_table(out)
+   assert_equal("Filesystem", out.Mounted[1])
 end
 
 -- file_exists
@@ -33,4 +31,14 @@ end
 -- reports
 function test_reports_nxfunction()
    assert_equal('Ummm Brain, we have no method called report_nxfunction', pinky.reports("nxfunction"))
+end
+
+-- split
+function test_split_string()
+   assert_equal("What", pinky.split('What are we going to do tonight Brain?',' ')[1])
+end
+
+-- tests
+function test_file_exists_nxfile()
+   assert_false(pinky.file_exists("/usr/foobar/lala auxwww"))
 end
