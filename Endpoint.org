@@ -1,6 +1,28 @@
 * Table for all endpoint monitors and arguments
 
-| Base     | Arguments | Format |
-|----------+-----------+--------|
-| /reports |           |        |
-|   n      |           |        |
+
+** System Checks
+| Check            |   |
+|------------------+---|
+| Disk             |   |
+| Load             |   |
+| free             |   |
+| iostat           |   |
+| mpstat           |   |
+| netstat/ss       |   |
+| pmap             |   |
+| ps output        |   |
+| sar output       |   |
+| uptime           |   |
+| vmstat           |   |
+| who              |   |
+
+
+** TODO Service Checks
+| Check                              |   |   |   |   |
+|------------------------------------+---+---+---+---|
+| Check Process running              |   |   |   |   |
+| Return process information by name |   |   |   |   |
+| Check service port is up/active    |   |   |   |   |
+| Daemon ports                       |   |   |   |   |
+|                                    |   |   |   |   |

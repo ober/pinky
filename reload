@@ -22,5 +22,3 @@ echo "----------- 8080 port"
 curl http://localhost:8080/pinky/port_8080
 echo "----------- functions of cjson"
 curl http://localhost:8080/pinky/show_functions
-echo "----------- fail on invalid binary"
-curl http://localhost:8080/test/nxfile

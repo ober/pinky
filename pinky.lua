@@ -57,14 +57,14 @@ function exec_command(command,fields,key_field,sep,tokenize)
 end
 
 function return_fields(in_table,fields)
-   out_table = {}
+   local out_table = {}
    for k,v in pairs(in_table) do
       for I = 1, #fields do
-         if v[I] then
+         if v[fields[I]] then
             if out_table[k] then
-               table.insert(out_table[k],v[I])
+               table.insert(out_table[k],v[fields[I]])
             else
-               out_table[k] = { v[I] }
+               out_table[k] = { v[fields[I]] }
             end
          end
       end
