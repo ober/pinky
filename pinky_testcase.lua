@@ -5,14 +5,12 @@ local json = require 'cjson'
 module( "pinky_testcase", lunit.testcase, package.seeall )
 
 
-
 function setup()
    test_table = {}
    test_table.Alpha = { "A1", "B1", "C1", "D1", "E1" }
    test_table.Beta = { "A2", "B2", "C2", "D2", "E2" }
    test_table.Gamma = { "A3", "B3", "C3", "D3", "E3" }
    test_table.Delta = { "A4", "B4", "C4", "D4", "E4" }
-
 end
 
 

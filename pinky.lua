@@ -73,7 +73,7 @@ function return_fields(in_table,fields)
 end
 
 function show_functions(module)
-   out = ""
+   local out = ""
    local json = require 'cjson';
    for k,v in pairs(json) do
       if type(v)=='function' then
@@ -86,12 +86,44 @@ end
 function report_disk()
    -- Disk report.
    -- Return the output of df(1)
-   out = exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
+   local out = exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
    out.Mounted = nil -- remove header
    return out
 end
 
-function report_proc()
+function report_load()
+   return exec_command("/bin/uptime")
+end
+
+function report_iostat()
+   return exec_command("/bin/uptime")
+end
+
+function report_mpstat()
+   return exec_command("/bin/uptime")
+end
+
+function report_socks()
+   return exec_command("/bin/uptime")
+end
+
+function report_sar()
+   return exec_command("/bin/uptime")
+end
+
+function report_uptime()
+   return exec_command("/bin/uptime")
+end
+
+function report_vmstat()
+   return exec_command("/bin/uptime")
+end
+
+function report_who()
+   return exec_command("/bin/uptime")
+end
+
+function report_ps()
    return exec_command("/bin/ps auxwww", nil, 11, " +",true)
 end
 
@@ -99,10 +131,10 @@ function report_net()
    return exec_command("/bin/netstat -an", nil, 1, " +",true)
 end
 
-function report_mem()
+function report_memfree()
    -- call free(1) -m and return values
    -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   out = exec_command("/usr/bin/free -m", {1,2,3,4,5,6}, 1, " +", true)
+   local out = exec_command("/usr/bin/free -m", {1,2,3,4,5,6}, 1, " +", true)
    out.total = nil
    return out
 end
@@ -143,7 +175,7 @@ function alert_check_port(host,port)
 end
 
 function reports(check_type)
-   pinky_method = "report" .. "_" .. check_type
+   local pinky_method = "report" .. "_" .. check_type
    if type(_M[pinky_method]) == "function" then
       return json.encode(_M[pinky_method]())
    else

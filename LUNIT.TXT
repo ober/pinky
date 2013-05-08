@@ -131,7 +131,7 @@ Lunit defines 26 assert functions:
 
               Fails, if 'actual' is a thread.
 
-        assert_userdata( actual, [msg] )
+<        assert_userdata( actual, [msg] )
 
               Fails, if 'actual' isn't userdata.
 

@@ -2,23 +2,22 @@
 
 
 ** System Checks
-| Check            |   |
-|------------------+---|
-| Disk             |   |
-| Load             |   |
-| free             |   |
-| iostat           |   |
-| mpstat           |   |
-| netstat/ss       |   |
-| pmap             |   |
-| ps output        |   |
-| sar output       |   |
-| uptime           |   |
-| vmstat           |   |
-| who              |   |
+| Check      | raw endpoint     | check endpoint | implemented |
+|------------+------------------+----------------+-------------|
+| Disk       | /reports/disk    | /checks/disk   | yes         |
+| Load       | /reports/load    | /checks/load   | no          |
+| free       | /reports/memfree | /checks/       | no          |
+| iostat     | /reports/iostat  |                | no          |
+| mpstat     | /reports/mpstat  |                | no          |
+| netstat/ss | /reports/socks   |                | no          |
+| ps output  | /reports/ps      |                | yes         |
+| sar output | /reports/sar     |                | no          |
+| uptime     | /reports/uptime  |                | no          |
+| vmstat     | /reports/vmstat  |                | no          |
+| who        | /reports/who     |                | no          |
 
 
-** TODO Service Checks
+** TODO Service Checksx
 | Check                              |   |   |   |   |
 |------------------------------------+---+---+---+---|
 | Check Process running              |   |   |   |   |
