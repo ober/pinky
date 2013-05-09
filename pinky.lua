@@ -1,5 +1,4 @@
 module("pinky", package.seeall)
--- local posix = require 'posix'
 local json = require 'cjson'
 local lfs = require 'lfs'
 
