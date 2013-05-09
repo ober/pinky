@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>README</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="README"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2013-05-09 14:44:31 PDT"/>
+<meta name="author" content="jaimef"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">README</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 pinky - Monitoring system built on Openresty</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Purpose:</a></li>
+<li><a href="#sec-1-2">1.2 How to build plugins:</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1 Pinky rest structure</a></li>
+<li><a href="#sec-1-2-2">1.2.2 Pinky functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> pinky - Monitoring system built on Openresty</h2>
+<div class="outline-text-2" id="text-1">
+
+
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Purpose:</h3>
+<div class="outline-text-3" id="text-1-1">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> How to build plugins:</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+</div>
+
+<div id="outline-container-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> Pinky rest structure</h4>
+<div class="outline-text-4" id="text-1-2-1">
+
+<ul>
+<li id="sec-1-2-1-1">/pinky/ Core plugins.<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-1-2">/pinkyc/ - Custom plugins<br/>
+     Custom modules are loaded here.
+     There is no requirement for nginx.conf additions as a catchall
+     for pinky.dispatch() is handled via /pinkyc/*
+
+<ul>
+<li id="sec-1-2-1-2-1">Every custom module require a preamble containing the following.<br/>
+
+
+
+<pre class="example">module("rvm", package.seeall)
+local p = require 'pinky'
+local json = require 'cjson'
+</pre>
+
+<p>
+      This covers pulling in pinky core as well as json for output
+      formatting.
+</p>
+<p>
+      Additionally you are required to create an entry function
+      called main that takes the truncated uri as it's sole argument.
+</p>
+
+
+
+<pre class="example">function main(uri)
+   -- This function is the entry point.
+   local args = p.split(uri,"/")
+   -- Arguments:
+   -- 0: /rvm we list rubies
+   -- 1: /rvm/version list gems in this version of ruby
+   -- 2: /rvm/version/bundler list bundler version
+
+   if #args == 0 then
+      return rvm_list_rubies()
+   elseif #args == 1 then
+      return rvm_gem_list(args[1])
+   elseif #args == 2 then
+      return rvm_bundler_info(args[1])
+   end
+end
+</pre>
+
+
+<p>
+      We strip out all previous portions of the url including the
+      controller name (e.g. "/rvm/")
+</p>
+<p>
+      Each plugin is can enforces its own rest argument format.
+      In this example we have three levels.
+</p>
+<p>
+      Based on each we call a different function with the arguments
+      provided.
+</p>
+
+
+
+<pre class="example">function rvm_list_rubies()
+   -- return a list of all rubies
+   return json.encode(p.lsdir(RVM_PATH .. "/wrappers/"))
+end
+
+function rvm_gem_list(ruby)
+   -- return gem list of the ruby provided
+   cmd = RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
+   return json.encode(p.exec_command(cmd, {2,3,4,5,6}, 1, " +",true))
+end
+
+function rvm_bundler_info(ruby)
+   -- Return the bundler specific information on this bundler
+   cmd = RVM_PATH .. "/gems/" .. ruby .. "@global/bin/bundle info"
+   return json.encode(p.exec_command(cmd,{1,2,3,4,5,6}, 1, " +", true))
+end
+</pre>
+
+
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> Pinky functions</h4>
+<div class="outline-text-4" id="text-1-2-2">
+
+
+<ul>
+<li id="sec-1-2-2-1">Library<br/>
+<ul>
+<li id="sec-1-2-2-1-1">exec_command(command,fields,key_field,sep,tokenize)<br/>
+      This function handles executing external commands.
+
+<p>
+      The arguments are:
+</p><ul>
+<li>command: A String containing the full path to the binary and its arguments.
+</li>
+<li>Fields: A table of the numeric positions to return.
+</li>
+<li>Key_field: The position to use as the hash key.
+</li>
+<li>Sep: Regular expression to split each line of output from
+        command.
+</li>
+<li>Tokenize: Boolean to return output as a table, or a string.
+<ul>
+<li>true = return table
+</li>
+<li>nil  = return string
+</li>
+</ul>
+
+</li>
+</ul>
+
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-2">dispatch(uri)<br/>
+      Handler for all /pinkyc/ functions.
+
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-3">file_exists(filename)<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-4">lsdir (path)<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-5">print_table(in_table)<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-6">return_fields(in_table,fields)<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-7">show_functions(module)<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-1-8">split(pString, pPattern)<br/>
+
+
+
+
+
+
+
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-2">Alerts<br/>
+<ul>
+<li id="sec-1-2-2-2-1">alert_check_port(host,port)<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-2-2">alert_check_process(app)<br/>
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3">Reports<br/>
+<ul>
+<li id="sec-1-2-2-3-1">reports(check_type)<br/>
+      Entry point for all reports.
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-2">report_disk()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-3">report_iostat()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-4">report_load()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-5">report_memfree()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-6">report_mpstat()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-7">report_net()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-8">report_ps()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-9">report_sar()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-10">report_socks()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-11">report_uptime()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-12">report_vm()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-13">report_vmstat()<br/>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-2-3-14">report_who()<br/>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2013-05-09 14:44:31 PDT</p>
+<p class="author">Author: jaimef</p>
+<p class="creator">Org version 7.8.11 with Emacs version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

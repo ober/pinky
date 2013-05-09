@@ -1,14 +1,14 @@
 * pinky - Monitoring system built on Openresty
 
+#+OPTIONS: *:nil
+#+OPTIONS: ^:nil
 
 ** Purpose:
 
-** TODO How to build plugins:
-
+** How to build plugins:
 *** Pinky rest structure
-**** "/pinky/" Core plugins.
-
-**** "/pinkyc/" - Custom plugins
+**** /pinky/ Core plugins.
+**** /pinkyc/ - Custom plugins
      Custom modules are loaded here.
      There is no requirement for nginx.conf additions as a catchall
      for pinky.dispatch() is handled via /pinkyc/*
@@ -19,11 +19,112 @@ module("rvm", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 #+END_SRC
-
       This covers pulling in pinky core as well as json for output
       formatting.
 
-#+BEGIN_SRC lua
+      Additionally you are required to create an entry function
+      called main that takes the truncated uri as it's sole argument.
 
-local RVM_PATH = "/usr/local/.rvm/"
+#+BEGIN_SRC lua
+function main(uri)
+   -- This function is the entry point.
+   local args = p.split(uri,"/")
+   -- Arguments:
+   -- 0: /rvm we list rubies
+   -- 1: /rvm/version list gems in this version of ruby
+   -- 2: /rvm/version/bundler list bundler version
+
+   if #args == 0 then
+      return rvm_list_rubies()
+   elseif #args == 1 then
+      return rvm_gem_list(args[1])
+   elseif #args == 2 then
+      return rvm_bundler_info(args[1])
+   end
+end
 #+END_SRC
+
+      We strip out all previous portions of the url including the
+      controller name (e.g. "/rvm/")
+
+      Each plugin is can enforces its own rest argument format.
+      In this example we have three levels.
+
+      Based on each we call a different function with the arguments
+      provided.
+
+#+BEGIN_SRC lua
+function rvm_list_rubies()
+   -- return a list of all rubies
+   return json.encode(p.lsdir(RVM_PATH .. "/wrappers/"))
+end
+
+function rvm_gem_list(ruby)
+   -- return gem list of the ruby provided
+   cmd = RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
+   return json.encode(p.exec_command(cmd, {2,3,4,5,6}, 1, " +",true))
+end
+
+function rvm_bundler_info(ruby)
+   -- Return the bundler specific information on this bundler
+   cmd = RVM_PATH .. "/gems/" .. ruby .. "@global/bin/bundle info"
+   return json.encode(p.exec_command(cmd,{1,2,3,4,5,6}, 1, " +", true))
+end
+#+END_SRC lua
+
+*** Pinky functions
+
+**** Library
+***** exec_command(command,fields,key_field,sep,tokenize)
+      This function handles executing external commands.
+
+      The arguments are:
+      - command: A String containing the full path to the binary and its arguments.
+      - Fields: A table of the numeric positions to return.
+      - Key_field: The position to use as the hash key.
+      - Sep: Regular expression to split each line of output from
+        command.
+      - Tokenize: Boolean to return output as a table, or a string.
+        - true = return table
+        - nil  = return string
+
+
+***** dispatch(uri)
+      Handler for all /pinkyc/ functions.
+
+***** file_exists(filename)
+***** lsdir (path)
+***** print_table(in_table)
+***** return_fields(in_table,fields)
+***** show_functions(module)
+***** split(pString, pPattern)
+
+
+
+
+
+
+
+
+
+
+**** Alerts
+***** alert_check_port(host,port)
+***** alert_check_process(app)
+
+**** Reports
+***** reports(check_type)
+      Entry point for all reports.
+***** report_disk()
+***** report_iostat()
+***** report_load()
+***** report_memfree()
+***** report_mpstat()
+***** report_net()
+***** report_ps()
+***** report_sar()
+***** report_socks()
+***** report_uptime()
+***** report_vm()
+***** report_vmstat()
+***** report_who()
