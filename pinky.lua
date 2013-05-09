@@ -1,5 +1,7 @@
 module("pinky", package.seeall)
+-- local posix = require 'posix'
 local json = require 'cjson'
+local lfs = require 'lfs'
 
 local function debug (kind, msg)
    if msg then
@@ -33,6 +35,7 @@ function exec_command(command,fields,key_field,sep,tokenize)
    end
 
    local cmd_out, cmd_err = io.popen(command)
+
    if cmd_out then
       for line in cmd_out:lines() do
          if tokenize then
@@ -74,11 +77,19 @@ end
 
 function show_functions(module)
    local out = ""
-   local json = require 'cjson';
-   for k,v in pairs(json) do
+   local mymod = require(module)
+   for k,v in pairs(mymod) do
       if type(v)=='function' then
          out = out ..  k .. "\n"
       end
+   end
+   return out
+end
+
+function print_table(in_table)
+   local out = ""
+   for k,v in pairs(ngx.var) do
+      out = out .. " " .. k .. " " .. v
    end
    return out
 end
@@ -96,7 +107,7 @@ function report_load()
 end
 
 function report_iostat()
-   return exec_command("/bin/uptime")
+   return exec_command("/bin/iostat 2|head -n 1")
 end
 
 function report_mpstat()
@@ -174,6 +185,26 @@ function alert_check_port(host,port)
    end
 end
 
+function dispatch(uri)
+   local uri = split(uri,"/")
+   local PINKY_HOME = "/home/jaimef/pinky"
+   local custom_lib = uri[2]
+   -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
+   local short_uri = ""
+
+   for I=3,#uri do
+      short_uri = short_uri .. "/" .. uri[I]
+   end
+
+   if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
+      local custom_lib = require(custom_lib)
+      -- make sure main exists first, then error.
+      return custom_lib.main(short_uri)
+   else
+      return "Error: could not locate " .. custom_lib
+   end
+end
+
 function reports(check_type)
    local pinky_method = "report" .. "_" .. check_type
    if type(_M[pinky_method]) == "function" then
@@ -204,4 +235,14 @@ function split(pString, pPattern)
       table.insert(Table, cap)
    end
    return Table
+end
+
+function lsdir (path)
+   local out_table = {}
+   for file in lfs.dir(path) do
+      if file ~= "." and file ~= ".." then
+         table.insert(out_table, file)
+      end
+   end
+   return out_table
 end
