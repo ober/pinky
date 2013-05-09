@@ -1,4 +1,14 @@
-pinky
-=====
+* pinky - Monitoring system built on Openresty
 
-Monitoring system built on Openresty
+
+** Purpose:
+
+** TODO How to build plugins:
+
+*** Pinky rest structure
+**** /pinky/ Core plugins.
+
+**** /pinkyc/ - Custom plugins
+     Custom modules are loaded here.
+     There is no requirement for nginx.conf additions as a catchall
+     for pinky.dispatch() is handled via /pinkyc/*
