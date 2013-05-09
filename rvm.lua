@@ -1,7 +1,6 @@
 module("rvm", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
-local lfs = require 'lfs'
 local RVM_PATH = "/home/jaimef/.rvm/"
 
 function main(uri)

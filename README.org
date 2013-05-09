@@ -6,9 +6,24 @@
 ** TODO How to build plugins:
 
 *** Pinky rest structure
-**** /pinky/ Core plugins.
+**** "/pinky/" Core plugins.
 
-**** /pinkyc/ - Custom plugins
+**** "/pinkyc/" - Custom plugins
      Custom modules are loaded here.
      There is no requirement for nginx.conf additions as a catchall
      for pinky.dispatch() is handled via /pinkyc/*
+
+***** Every custom module require a preamble containing the following.
+#+BEGIN_SRC lua
+module("rvm", package.seeall)
+local p = require 'pinky'
+local json = require 'cjson'
+#+END_SRC
+
+      This covers pulling in pinky core as well as json for output
+      formatting.
+
+#+BEGIN_SRC lua
+
+local RVM_PATH = "/usr/local/.rvm/"
+#+END_SRC
