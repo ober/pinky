@@ -79,11 +79,10 @@ end
 #+BEGIN_SRC config
     server {
         listen 44444;
-        location = /pinky/ {
+        location ~ /pinky/* {
             content_by_lua '
             local pinky = require("pinky")
-            -- ngx.say(pinky.dispatch())
-            nginx.say(type(ngx.var))
+            ngx.say(pinky.dispatch(ngx.var.uri))
             ';
         }
     }
@@ -125,25 +124,3 @@ end
 ***** show_functions(module)
 ***** split(pString, pPattern)
       Split a string into a table with pattern.
-
-
-**** Alerts
-***** alert_check_port(host,port)
-***** alert_check_process(app)
-
-**** Reports
-***** reports(check_type)
-      Entry point for all reports.
-***** report_disk()
-***** report_iostat()
-***** report_load()
-***** report_memfree()
-***** report_mpstat()
-***** report_net()
-***** report_ps()
-***** report_sar()
-***** report_socks()
-***** report_uptime()
-***** report_vm()
-***** report_vmstat()
-***** report_who()
