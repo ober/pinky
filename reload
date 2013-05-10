@@ -22,9 +22,11 @@ tail -f nginx/logs/error* &
 # curl http://localhost:8080/pinky/port_8080
 # echo "----------- functions of cjson"
 # curl http://localhost:8080/pinky/show_functions
-echo "----------- rvm"
-curl http://localhost:8080/pinkyc/rvm
-echo "------------rvm/1.9.3"
-curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392
-echo "----------- rvm/1.9.3/bundler"
-curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392/bundler
+# echo "----------- rvm"
+# curl http://localhost:8080/pinkyc/rvm
+# echo "------------rvm/1.9.3"
+# curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392
+# echo "----------- rvm/1.9.3/bundler"
+# curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392/bundler
+echo "----------- disk"
+curl http://localhost:8080/pinky/disk/

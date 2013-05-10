@@ -93,13 +93,25 @@ function print_table(in_table)
    return out
 end
 
-function report_disk()
-   -- Disk report.
-   -- Return the output of df(1)
-   local out = exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
-   out.Mounted = nil -- remove header
-   return out
+function reports(check_type)
+   local pinky_method = "report" .. "_" .. check_type
+   if type(_M[pinky_method]) == "function" then
+      return json.encode(_M[pinky_method]())
+   else
+      return "Ummm Brain, we have no method called " .. pinky_method
+   end
 end
+
+function checks(check_type)
+   local pinky_method = "check" .. "_" .. check_type
+   if type(_M[pinky_method]) == "function" then
+      return json.encode(_M[pinky_method]())
+   else
+      return "Ummm Brain, we have no method called " .. pinky_method
+   end
+end
+
+-- repetative shit
 
 function report_load()
    return exec_command("/bin/uptime")
@@ -157,7 +169,7 @@ function report_vm()
    return out
 end
 
-function alert_check_process(app)
+function check_process(app)
    local ps =  exec_command("/bin/ps auxwww", nil, 11, " +", true)
    if ps[app] then
       return "OK"
@@ -204,14 +216,6 @@ function dispatch(uri)
    end
 end
 
-function reports(check_type)
-   local pinky_method = "report" .. "_" .. check_type
-   if type(_M[pinky_method]) == "function" then
-      return json.encode(_M[pinky_method]())
-   else
-      return "Ummm Brain, we have no method called " .. pinky_method
-   end
-end
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
 function split(pString, pPattern)
