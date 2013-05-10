@@ -72,6 +72,23 @@ function rvm_bundler_info(ruby)
 end
 #+END_SRC lua
 
+
+
+*** Nginx configuration
+    You will need to include the following in your nginx.conf
+#+BEGIN_SRC config
+    server {
+        listen 44444;
+        location = /pinky/ {
+            content_by_lua '
+            local pinky = require("pinky")
+            -- ngx.say(pinky.dispatch())
+            nginx.say(type(ngx.var))
+            ';
+        }
+    }
+#+END_SRC
+
 *** Pinky functions
 
 **** Library
@@ -92,20 +109,22 @@ end
 ***** dispatch(uri)
       Handler for all /pinkyc/ functions.
 
+      Any calls to /pinkyc/foo will result in
+      foo.lua being loaded if it exists.
+      Then foo.main will be called with the uri relative to /pinkyc/
+
 ***** file_exists(filename)
+      Function to verify a fully qualified path/file exists.
+      Returns boolean.
+
 ***** lsdir (path)
+      Function to return the files in the directory passed as an argument.
 ***** print_table(in_table)
+      Iterate over a table and
 ***** return_fields(in_table,fields)
 ***** show_functions(module)
 ***** split(pString, pPattern)
-
-
-
-
-
-
-
-
+      Split a string into a table with pattern.
 
 
 **** Alerts
