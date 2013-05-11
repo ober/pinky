@@ -1,6 +1,8 @@
 #!/bin/bash
 
+
 cd ~/nginx-accelerator/
+ln -s ~/pinky/*.lua ./ngx_openresty/luajit/share/lua/5.1/
 pkill -9 nginx 2>&1 > /dev/null
 ./nginx/start
 tail -f nginx/logs/error* &
@@ -29,4 +31,4 @@ tail -f nginx/logs/error* &
 # echo "----------- rvm/1.9.3/bundler"
 # curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392/bundler
 echo "----------- disk"
-curl http://localhost:8080/pinky/disk/
+curl http://localhost:44444/pinky/disk/
