@@ -7,29 +7,29 @@ pkill -9 nginx 2>&1 > /dev/null
 ./nginx/start
 tail -f nginx/logs/error* &
 # echo "----------- disk"
-# curl http://localhost:8080/pinky/disk 2>/dev/null|tr "|" "\n"
+# curl http://localhost:44444/pinky/disk 2>/dev/null|tr "|" "\n"
 # echo "----------- mem"
-# curl http://localhost:8080/pinky/mem
+# curl http://localhost:44444/pinky/mem
 # echo "----------- net"
-# curl http://localhost:8080/pinky/net
+# curl http://localhost:44444/pinky/net
 # #echo "----------- ps"
-# # curl http://localhost:8080/pinky/proc
+# # curl http://localhost:44444/pinky/proc
 # echo "----------- lua"
-# curl http://localhost:8080/pinky/lua_running
+# curl http://localhost:44444/pinky/lua_running
 # echo "----------- opera"
-# curl http://localhost:8080/pinky/opera_running
+# curl http://localhost:44444/pinky/opera_running
 # echo "----------- ssh port"
-# curl http://localhost:8080/pinky/port_ssh
-# echo "----------- 8080 port"
-# curl http://localhost:8080/pinky/port_8080
+# curl http://localhost:44444/pinky/port_ssh
+# echo "----------- 44444 port"
+# curl http://localhost:44444/pinky/port_44444
 # echo "----------- functions of cjson"
-# curl http://localhost:8080/pinky/show_functions
+# curl http://localhost:44444/pinky/show_functions
 # echo "----------- rvm"
-# curl http://localhost:8080/pinkyc/rvm
+# curl http://localhost:44444/pinkyc/rvm
 # echo "------------rvm/1.9.3"
-# curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392
+# curl http://localhost:44444/pinkyc/rvm/ruby-1.9.3-p392
 # echo "----------- rvm/1.9.3/bundler"
-# curl http://localhost:8080/pinkyc/rvm/ruby-1.9.3-p392/bundler
+# curl http://localhost:44444/pinkyc/rvm/ruby-1.9.3-p392/bundler
 echo "----------- disk"
 curl http://localhost:44444/pinky/disk/
 echo "----------- port"
@@ -38,3 +38,5 @@ echo "----------- port1"
 curl http://localhost:44444/pinky/port/localhost
 echo "----------- port2"
 curl http://localhost:44444/pinky/port/localhost/80
+echo "----------- functions of cjson"
+curl http://localhost:44444/pinky/functions/lfs
