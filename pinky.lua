@@ -102,15 +102,6 @@ function reports(check_type)
    end
 end
 
-function checks(check_type)
-   local pinky_method = "check" .. "_" .. check_type
-   if type(_M[pinky_method]) == "function" then
-      return json.encode(_M[pinky_method]())
-   else
-      return "Ummm Brain, we have no method called " .. pinky_method
-   end
-end
-
 -- repetative shit
 
 function report_load()
