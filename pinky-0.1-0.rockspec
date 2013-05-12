@@ -19,6 +19,11 @@ dependencies = {
 build = {
    type = "builtin",
    modules = {
+      disk = "disk.lua"
+      functions = "functions.lua"
       pinky = "pinky.lua"
+      port  = "port.lua"
+      rvm = "rvm.lua"
+      vmstat = "vmstat.lua"
    }
 }
