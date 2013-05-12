@@ -152,24 +152,6 @@ function report_memfree()
    return out
 end
 
-function report_vm()
-   -- call free(1) -m and return values
-   -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   out = exec_command("/usr/bin/vmstat -s", {1,2,3,4,5,6}, {1,2}, " +", true)
-   out.total = nil
-   return out
-end
-
-function check_process(app)
-   local ps =  exec_command("/bin/ps auxwww", nil, 11, " +", true)
-   if ps[app] then
-      return "OK"
-   else
-      return "FAIL"
-   end
-end
-
-
 function dispatch(uri)
    local uri = split(uri,"/")
    local PINKY_HOME = "/home/jaimef/pinky"
@@ -184,12 +166,15 @@ function dispatch(uri)
    if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
-      return custom_lib.main(short_uri)
+      if custom_lib.pinky_main then
+         return custom_lib.pinky_main(short_uri)
+      else
+         return "Could not locate " .. uri[2] .. ".pinky_main"
+      end
    else
       return "Error: could not locate " .. custom_lib
    end
 end
-
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
 function split(pString, pPattern)

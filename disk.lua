@@ -3,7 +3,7 @@ module("disk", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 
-function main(uri)
+local function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:

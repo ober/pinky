@@ -3,7 +3,7 @@ local p = require 'pinky'
 local json = require 'cjson'
 local RVM_PATH = "/home/jaimef/.rvm/"
 
-function main(uri)
+function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:

@@ -1,6 +1,3 @@
-module("port", package.seeall)
-local p = require 'pinky'
-local json = require 'cjson'
 
 local usage = {
    data = "",
@@ -14,7 +11,7 @@ Valid URLS:
    }
 }
 
-function main(uri)
+function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
