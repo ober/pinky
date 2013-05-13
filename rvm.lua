@@ -1,7 +1,6 @@
 module("rvm", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
-local RVM_PATH = "/home/jaimef/.rvm/"
 
 function pinky_main(uri)
    -- This function is the entry point.
@@ -27,7 +26,7 @@ end
 
 function rvm_gem_list(ruby)
    -- return gem list of the ruby provided
-   cmd = RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
+   cmd = "/usr/bin/env RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
    return json.encode(p.exec_command(cmd, {2,3,4,5,6}, 1, " +",true))
 end
 

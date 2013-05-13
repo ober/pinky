@@ -8,37 +8,29 @@ ln -s ~/pinky/*.lua ./ngx_openresty/luajit/share/lua/5.1/ 2>/dev/null
 pkill -9 nginx 2>/dev/null
 ./nginx/start
 tail -f nginx/logs/error* &
-# echo "----------- disk"
-# curl http://localhost:44444/pinky/disk 2>/dev/null|tr "|" "\n"
-# echo "----------- memfree"
-# curl http://localhost:44444/pinky/memfree
-# echo "----------- net"
-# curl http://localhost:44444/pinky/net
-# #echo "----------- ps"
-# # curl http://localhost:44444/pinky/proc
-echo "----------- lua"
-curl http://localhost:44444/pinky/process/
-# echo "----------- opera"
-# curl http://localhost:44444/pinky/opera_running
-# echo "----------- ssh port"
-# curl http://localhost:44444/pinky/port_ssh
-# echo "----------- 44444 port"
-# curl http://localhost:44444/pinky/port_44444
-# echo "----------- functions of cjson"
-# curl http://localhost:44444/pinky/functions/lfs
-# echo "----------- rvm"
-# curl http://localhost:44444/pinky/rvm
-# echo "------------rvm/1.9.3"
-# curl http://localhost:44444/pinky/rvm/ruby-1.9.3-p392
-# echo "----------- rvm/1.9.3/bundler"
-# curl http://localhost:44444/pinky/rvm/ruby-1.9.3-p392/bundler
-# echo "----------- disk"
-# curl http://localhost:44444/pinky/disk/
-# echo "----------- port"
-# curl http://localhost:44444/pinky/port/
-# echo "----------- port1"
-# curl http://localhost:44444/pinky/port/localhost
-# echo "----------- port2"
-# curl http://localhost:44444/pinky/port/localhost/80
-# echo "----------- functions of cjson"
-# curl http://localhost:44444/pinky/functions/lfs
+echo "----------- disk"
+curl http://localhost:44444/pinky/disk 2>/dev/null|tr "|" "\n"
+echo "----------- memfree"
+curl http://localhost:44444/pinky/memfree
+echo "----------- net"
+curl http://localhost:44444/pinky/net
+echo "----------- nginx:"
+curl http://localhost:44444/pinky/process/nginx:
+echo "----------- ssh port"
+curl http://localhost:44444/pinky/port/80
+echo "----------- 44444 port"
+curl http://localhost:44444/pinky/port/44444
+echo "----------- rvm"
+curl http://localhost:44444/pinky/rvm
+echo "------------rvm/1.9.3"
+curl http://localhost:44444/pinky/rvm/ruby-1.9.3-p392
+echo "----------- rvm/1.9.3/bundler"
+curl http://localhost:44444/pinky/rvm/ruby-1.9.3-p392/bundler
+echo "----------- disk"
+curl http://localhost:44444/pinky/disk/
+echo "----------- port"
+curl http://localhost:44444/pinky/port/
+echo "----------- port1"
+curl http://localhost:44444/pinky/port/localhost
+echo "----------- port2"
+curl http://localhost:44444/pinky/port/localhost/80

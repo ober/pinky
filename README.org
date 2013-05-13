@@ -25,12 +25,12 @@ local json = require 'cjson'
       called main that takes the truncated uri as it's sole argument.
 
 #+BEGIN_SRC lua
-function pinky_ main(uri)
+function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
-   -- 0: /rvm we list rubies
-   -- 1: /rvm/version list gems in this version of ruby
+   -- 0: /rvm                 we list rubies
+   -- 1: /rvm/version         list gems in this version of ruby
    -- 2: /rvm/version/bundler list bundler version
 
    if #args == 0 then
@@ -70,8 +70,6 @@ function rvm_bundler_info(ruby)
    return json.encode(p.exec_command(cmd,{1,2,3,4,5,6}, 1, " +", true))
 end
 #+END_SRC lua
-
-
 
 *** Nginx configuration
     You will need to include the following in your nginx.conf

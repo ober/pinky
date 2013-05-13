@@ -82,30 +82,30 @@ function dispatch(uri)
    local short_uri = ""
 
    if #uri < 1 then
-      return  { data = {}, status = { value = "FAIL", error = "Unable to find functions in uri" }}
+      return  json.encode({ data = {}, status = { value = "FAIL", error = "Unable to find functions in uri" }})
    end
 
    for I=3,#uri do
       short_uri = short_uri .. "/" .. uri[I]
    end
 
-   if not  uri[2] then
-      return  { data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }}
+   if not uri[2] then
+      return json.encode({ data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }})
    end
 
    if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
       if type(custom_lib) ~= "table" then
-         return  { data = {}, status = { value = "FAIL", error = "Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib) }}
+         return json.encode({ data = {}, status = { value = "FAIL", error = "Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib) }})
       end
       if custom_lib.pinky_main then
          return custom_lib.pinky_main(short_uri)
       else
-         return  { data = {}, status = { value = "FAIL", error = "Could not locate " .. uri[2] .. ".pinky_main" }}
+         return json.encode({ data = {}, status = { value = "FAIL", error = "Could not locate " .. uri[2] .. ".pinky_main" }})
       end
    else
-      return  { data = {}, status = { value = "FAIL", error = "Error: could not locate " .. custom_lib }}
+      return json.encode({ data = {}, status = { value = "FAIL", error = "Error: could not locate " .. custom_lib }})
    end
 end
 
