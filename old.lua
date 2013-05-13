@@ -16,8 +16,7 @@ function print_table(in_table)
    end
    return out
 end
-
-
+\
 function reports(check_type)
    local pinky_method = "report" .. "_" .. check_type
    if type(_M[pinky_method]) == "function" then

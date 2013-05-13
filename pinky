@@ -1,0 +1,31 @@
+#!/usr/bin/env lua
+local p = require 'pinky'
+
+if #arg < 1 then
+   return print("Usage: <me> <args> " .. #arg)
+end
+
+function print_table(in_table)
+   local out2 = ""
+   for k,v in pairs(in_table) do
+      out2 = out2 .. " " .. k -- .. " " .. v
+   end
+   print(out2)
+end
+
+out = p.dispatch(arg[1])
+
+if type(out) == "table" then
+   print("XXX FIXME: " .. arg[1] .. " is not sending me json back!")
+   if out.status then
+      if out.status.value == "FAIL" then
+         print("msg:" .. tostring(out.status.error) .. " data:" .. tostring(#out.data))
+      else
+         print_table(out.data)
+      end
+   else
+      print("Got nil back on out.status: " .. tostring(out.status))
+   end
+else
+   print(tostring(out))
+end

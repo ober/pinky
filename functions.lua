@@ -8,7 +8,7 @@ function main(uri)
    -- Arguments:
    -- 1: /function
    if #args == 0 then
-      return ""
+      return  { data = {}, status = { value = "FAIL", error = "We need a module passed to us" }}
    elseif #args == 1 then
       return show_functions(args[1])
    end
@@ -20,6 +20,15 @@ function show_functions(module)
    for k,v in pairs(mymod) do
       if type(v)=='function' then
          out = out ..  k .. "\n"
+      end
+   end
+   return out
+end
+function show_functions(module)
+   local mymod = require(module)
+   for k,v in pairs(mymod) do
+      if type(v)=='function' then
+         print(k .. "\n")
       end
    end
    return out

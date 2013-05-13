@@ -25,7 +25,7 @@ local json = require 'cjson'
       called main that takes the truncated uri as it's sole argument.
 
 #+BEGIN_SRC lua
-function main(uri)
+function pinky_ main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:

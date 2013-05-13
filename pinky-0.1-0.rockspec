@@ -21,8 +21,10 @@ build = {
    modules = {
       disk = "disk.lua",
       functions = "functions.lua",
+      memfree = "memfree.lua",
       pinky = "pinky.lua",
       port  = "port.lua",
+      process  = "process.lua",
       rvm = "rvm.lua",
       vmstat = "vmstat.lua"
    }

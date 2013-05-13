@@ -16,10 +16,8 @@ end
 -- exec_command
 function test_exec_command_nxfile()
    out = pinky.exec_command("/usr/bin/some_binary_not_there")
-   assert_equal("foo", out.status)
-   -- assert_equal('Error: /usr/bin/some_binary_not_there could not be found',
-   -- .status.error,
-   -- "Test exec_command on nxfile")
+   assert_equal("FAIL", out.status.value)
+   assert_equal("/usr/bin/some_binary_not_there could not be found", out.status.error)
 end
 
 function test_exec_command_yes()
@@ -107,9 +105,9 @@ function test_file_exists_nxfile()
 end
 
 -- reports
-function test_reports_nxfunction()
-   assert_equal("Error: Unable to find functions in uri", pinky.dispatch("nxfunction").status.error)
-end
+-- function test_reports_nxfunction()
+--    assert_equal("Error: Unable to find functions in uri", pinky.dispatch("nxfunction").status.error)
+-- end
 
 -- split
 function test_split_string()

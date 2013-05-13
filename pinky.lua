@@ -30,7 +30,7 @@ function exec_command(command,fields,key_field,sep,tokenize)
    local out = ""
 
    if command and not file_exists(split(command, " ")[1]) then
-      handle_error("Error: " .. split(command," ")[1] .. " could not be found")
+      return  { data = {}, status = { value = "FAIL", error = split(command," ")[1] .. " could not be found" } }
    end
 
    local cmd_out, cmd_err = io.popen(command)
@@ -81,32 +81,31 @@ function dispatch(uri)
    -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
    local short_uri = ""
 
-   if #uri < 2 then
-      handle_error("Error: Unable to find functions in uri")
+   if #uri < 1 then
+      return  { data = {}, status = { value = "FAIL", error = "Unable to find functions in uri" }}
    end
 
    for I=3,#uri do
       short_uri = short_uri .. "/" .. uri[I]
    end
 
-
    if not  uri[2] then
-      handle_error("uri[2] is nil!")
+      return  { data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }}
    end
 
    if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
       if type(custom_lib) ~= "table" then
-         handle_error("Error: type is " .. type(custom_lib))
+         return  { data = {}, status = { value = "FAIL", error = "Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib) }}
       end
       if custom_lib.pinky_main then
          return custom_lib.pinky_main(short_uri)
       else
-         handle_error("Could not locate " .. uri[2] .. ".pinky_main")
+         return  { data = {}, status = { value = "FAIL", error = "Could not locate " .. uri[2] .. ".pinky_main" }}
       end
    else
-      handle_error("Error: could not locate " .. custom_lib)
+      return  { data = {}, status = { value = "FAIL", error = "Error: could not locate " .. custom_lib }}
    end
 end
 
@@ -141,8 +140,4 @@ function lsdir (path)
       end
    end
    return out_table
-end
-
-function handle_error(msg)
-   return  { data = {}, status = { value = "FAIL", error = msg} }
 end
