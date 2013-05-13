@@ -27,5 +27,8 @@ build = {
       process  = "process.lua",
       rvm = "rvm.lua",
       vmstat = "vmstat.lua"
+   },
+   install = {
+      bin = { "pinky" }
    }
 }
