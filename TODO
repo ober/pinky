@@ -1,8 +1,0 @@
-1. Tests for coverage.
-2. breakout into multiple files.
-3. checks
-   - process utilization
-   - vmstat
-   - iostat
-   - netstat
-   - logs issues.
