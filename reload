@@ -1,8 +1,9 @@
 #!/bin/bash
 
 
+cd ~/pinky && luarocks make --local # Install rocks
 cd ~/nginx-accelerator/
-ln -s ~/pinky/*.lua ./ngx_openresty/luajit/share/lua/5.1/
+ln -s ~/pinky/*.lua ./ngx_openresty/luajit/share/lua/5.1/ 2>/dev/null
 pkill -9 nginx 2>&1 > /dev/null
 ./nginx/start
 tail -f nginx/logs/error* &

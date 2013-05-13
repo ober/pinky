@@ -81,6 +81,10 @@ function dispatch(uri)
    -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
    local short_uri = ""
 
+   if #uri < 2 then
+      return "Error: Unable to find functions in uri"
+   end
+
    for I=3,#uri do
       short_uri = short_uri .. "/" .. uri[I]
    end
@@ -88,6 +92,11 @@ function dispatch(uri)
    if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
+      if type(custom_lib) == "table" then
+         return "Brain, we have a boolean!"
+      else
+         return "XXX: type is " .. type(custom_lib)
+      end
       if custom_lib.pinky_main then
          return custom_lib.pinky_main(short_uri)
       else

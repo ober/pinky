@@ -7,11 +7,10 @@
 
 ** How to build plugins:
 *** Pinky rest structure
-**** /pinky/ Core plugins.
-**** /pinkyc/ - Custom plugins
-     Custom modules are loaded here.
+**** /pinky/ -
+     All modules are loaded from here.
      There is no requirement for nginx.conf additions as a catchall
-     for pinky.dispatch() is handled via /pinkyc/*
+     for pinky.dispatch() is handled via /pinky/*
 
 ***** Every custom module require a preamble containing the following.
 #+BEGIN_SRC lua
@@ -110,7 +109,7 @@ end
 
       Any calls to /pinkyc/foo will result in
       foo.lua being loaded if it exists.
-      Then foo.main will be called with the uri relative to /pinkyc/
+      Then foo.pinky_main() will be called with the uri relative to /pinky/
 
 ***** file_exists(filename)
       Function to verify a fully qualified path/file exists.

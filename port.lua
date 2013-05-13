@@ -1,3 +1,6 @@
+module("port", package.seeall)
+local p = require 'pinky'
+local json = require 'cjson'
 
 local usage = {
    data = "",

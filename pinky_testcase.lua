@@ -105,7 +105,7 @@ end
 
 -- reports
 function test_reports_nxfunction()
-   assert_equal('Ummm Brain, we have no method called report_nxfunction', pinky.reports("nxfunction"))
+   assert_equal("Error: Unable to find functions in uri", pinky.dispatch("nxfunction"))
 end
 
 -- split
