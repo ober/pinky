@@ -1,4 +1,3 @@
--- Pinky plugin to check localhost tcp ports availability
 module("disk", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
@@ -9,24 +8,6 @@ local function pinky_main(uri)
    -- Arguments:
    -- 0: /port we return usage
    return report_disk()
-end
-
-function report_port(host,port)
-   local cmd = "/bin/nc -v -z -w 1 " .. host .. " " .. port .. " 2>&1"
-   local nc = exec_command(cmd)
-   local success = "succeeded!"
-   local failure = "failed: Connection refused"
-   if nc then
-      if string.find(nc,failure) then
-         return "FAIL"
-      elseif string.find(nc,success) then
-         return "OK"
-      else
-         return "UNKNOWN:" .. nc
-      end
-   else
-      return "Error running nc returned nil"
-   end
 end
 
 function report_disk()

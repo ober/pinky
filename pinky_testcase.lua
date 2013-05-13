@@ -13,10 +13,13 @@ function setup()
    test_table.Delta = { "A4", "B4", "C4", "D4", "E4" }
 end
 
-
 -- exec_command
 function test_exec_command_nxfile()
-   assert_equal('Error: /usr/bin/some_binary_not_there could not be found',pinky.exec_command("/usr/bin/some_binary_not_there"), "Test exec_command on nxfile")
+   out = pinky.exec_command("/usr/bin/some_binary_not_there")
+   assert_equal("foo", out.status)
+   -- assert_equal('Error: /usr/bin/some_binary_not_there could not be found',
+   -- .status.error,
+   -- "Test exec_command on nxfile")
 end
 
 function test_exec_command_yes()
@@ -105,7 +108,7 @@ end
 
 -- reports
 function test_reports_nxfunction()
-   assert_equal("Error: Unable to find functions in uri", pinky.dispatch("nxfunction"))
+   assert_equal("Error: Unable to find functions in uri", pinky.dispatch("nxfunction").status.error)
 end
 
 -- split
