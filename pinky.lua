@@ -141,3 +141,10 @@ function lsdir (path)
    end
    return out_table
 end
+
+function read_file(file)
+   local fd = io.open(file, "rb")
+   local guts = fd:read("*all")
+   f:close()
+   return guts
+end
