@@ -26,8 +26,8 @@ end
 
 function rvm_gem_list(ruby)
    -- return gem list of the ruby provided
-   cmd = "/usr/bin/env RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
-   return json.encode(p.exec_command(cmd, {2,3,4,5,6}, 1, " +",true))
+   cmd = "/usr/bin/env rvm list"
+   return json.encode(p.exec_command(cmd))
 end
 
 function rvm_bundler_info(ruby)

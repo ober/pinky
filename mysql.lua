@@ -54,3 +54,9 @@ function report_latency(server,latency)
    -- out.status = { value = "OK", error = "" }
    -- return json.encode(out)
 end
+
+function read_mmtop_config()
+
+
+
+end
