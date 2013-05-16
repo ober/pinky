@@ -24,6 +24,7 @@ function show_functions(module)
    end
    return out
 end
+
 function show_functions(module)
    local mymod = require(module)
    for k,v in pairs(mymod) do

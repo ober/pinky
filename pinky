@@ -23,7 +23,7 @@ if type(out) == "table" then
    print("XXX FIXME: " .. arg[1] .. " is not sending me json back!")
    if out.status then
       if out.status.value == "FAIL" then
-         print("msg:" .. tostring(out.status.error) .. " data:" .. tostring(#out.data))
+         print("msg:" .. tostring(out.status.error) .. " data:" .. tostring(out.data))
       else
          print_table(out.data)
       end
