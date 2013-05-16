@@ -14,6 +14,8 @@ description = {
 dependencies = {
    "lua ~> 5.1",
    "lua-cjson ~> 2.1.0-1",
+   "luasql-mysql",
+   "lyaml",
    "luafilesystem"
 }
 build = {
