@@ -7,7 +7,7 @@ local yaml = require "lyaml"
 function pinky_main(uri)
    -- This function is the entry point.
    -- /pinky/mysql/check/host
-   local out = "lala" .. "\n"
+   local out = { data = out, status = { value = "", error = ""} }
    local args = p.split(uri,"/")
    -- Arguments:
    -- 0: / return usage
@@ -15,26 +15,31 @@ function pinky_main(uri)
    -- 2: db server
    -- 4: database name
    -- 3: check
-   local check = args[1]
-   local host = args[2]
 
-   out = mysql_query(host,"root","test","select bar from wtf")
+   if #args < 1 then
+      out.status.value,out.status.error = "FAIL", "Not enough parameters passed"
+      return out
+   end
+
+   local host = args[1]
+   local config = read_mmtop_config()
+   out = mysql_query(host,config.user,config.password,"test","show slave status")
 
    local out = { data = out, status = { value = "OK", error = ""} }
    return json.encode(out)
 end
 
-function mysql_connect(host,user,db)
+function mysql_connect(host,user,password,db)
    env = assert (luasql.mysql())
-   con = assert (env:connect("test","root",nil,localhost))
+   con = assert (env:connect("test",user,password,host))
    return con
 end
 
-function mysql_query(host,user,db,query)
+function mysql_query(host,user,password,db,query)
    -- return a table of the results
    out = {}
-   con = mysql_connect(host,user,db)
-   cur = con:execute"select * from wtf"
+   con = mysql_connect(host,user,password,"test")
+   cur = con:execute(query)
    row = cur:fetch ({}, "a")
    while row do
       table.insert(out,row)
@@ -44,19 +49,6 @@ function mysql_query(host,user,db,query)
    return out
 end
 
-function report_latency(server,latency)
-   -- Mysql report for latency
-   -- env = m.mysql.mysql()
-   return type(mysql)
-   -- local out = p.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
-   -- out.Mounted = nil -- remove header
-   -- out = { data = out }
-   -- out.status = { value = "OK", error = "" }
-   -- return json.encode(out)
-end
-
 function read_mmtop_config()
-
-
-
+   return yaml.load(p.read_file("/home/ubuntu/.mmtop_config"))
 end
