@@ -50,5 +50,9 @@ function mysql_query(host,user,password,db,query)
 end
 
 function read_mmtop_config()
-   return yaml.load(p.read_file(os.getenv("HOME") .. "/.mmtop_config"))
+   local home = os.getenv("HOME")
+   if not home then
+      home = "/home/ubuntu/"
+   end
+   return yaml.load(p.read_file(home .. "/.mmtop_config"))
 end
