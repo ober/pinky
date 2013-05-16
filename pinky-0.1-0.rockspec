@@ -27,6 +27,7 @@ build = {
       pinky = "pinky.lua",
       port  = "port.lua",
       process  = "process.lua",
+      predis  = "predis.lua",
       rvm = "rvm.lua",
       vmstat = "vmstat.lua"
    },
