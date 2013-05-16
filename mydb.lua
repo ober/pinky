@@ -1,4 +1,4 @@
-module("mysql", package.seeall)
+module("mydb", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 local luasql = require "luasql.mysql"
