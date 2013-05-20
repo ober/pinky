@@ -25,6 +25,7 @@ build = {
       mydb = "mydb.lua",
       memfree = "memfree.lua",
       pinky = "pinky.lua",
+      ping= "ping.lua",
       port  = "port.lua",
       process  = "process.lua",
       predis  = "predis.lua",
