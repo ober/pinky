@@ -1,4 +1,4 @@
-module("disk", package.seeall)
+module("ping", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 
