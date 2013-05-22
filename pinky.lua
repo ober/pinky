@@ -157,7 +157,6 @@ function get_home()
    elseif OS == "Linux" then
       return "/home/" .. USER .. "/"
    else
-      elseif OS == "Linux" then
       return "/home/" .. USER .. "/"
    end
 end
