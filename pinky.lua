@@ -162,3 +162,12 @@ end
 function get_os()
    return  os.execute("/usr/bin/uname -s")
 end
+
+function find_first_file(files)
+   -- We take a table of files, and return the first one that exists
+   for file = 1, #files do
+      if file_exists(file) then
+         return file
+      end
+   end
+end
