@@ -148,3 +148,17 @@ function read_file(file)
    fd:close()
    return guts
 end
+
+function get_home()
+   local OS = get_os()
+   local USER = os.execute("/usr/bin/whoami")
+   if OS == "Darwin" then
+      return "/Users/" .. USER .. "/"
+   elseif OS == "Linux"
+      return "/home/" .. USER .. "/"
+   end
+end
+
+function get_os()
+   return  os.execute("/usr/bin/uname -s")
+end
