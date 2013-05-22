@@ -48,6 +48,6 @@ end
 
 function rvm_bundler_info(ruby)
    -- Return the bundler specific information on this bundler
-   cmd = RVM_PATH .. "/gems/" .. ruby .. "@global/bin/bundle info"
-   return p.exec_command(cmd,{1,2,3,4,5,6}, 1, " +", true)
+   local list = rvm_gem_list(ruby)
+   return list["bundler"]
 end
