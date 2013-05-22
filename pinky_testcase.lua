@@ -148,9 +148,11 @@ end
 function test_find_first_file_1()
    local tf1 = "/tmp/lua_test_real_long_file"
    local tf2 = "/tmp/lua_test_real_long_file_no_exists"
-   files = { tf2, tf1 }
+   local tf3 = "/tmp/lua_test_real_long_file_no_exists2"
+   files = { tf2, tf1, tf3 }
    assert_equal(0, os.execute("/usr/bin/touch " .. tf1))
    assert_equal(tf1,p.find_first_file(files))
+   os.execute("/bin/rm " .. tf1)
 end
 
 
