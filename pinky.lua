@@ -151,23 +151,30 @@ end
 
 function get_home()
    local OS = get_os()
-   local USER = os.execute("/usr/bin/whoami")
+   local USER = get_username()
    if OS == "Darwin" then
       return "/Users/" .. USER .. "/"
-   elseif OS == "Linux"
+   elseif OS == "Linux" then
+      return "/home/" .. USER .. "/"
+   else
+      elseif OS == "Linux" then
       return "/home/" .. USER .. "/"
    end
 end
 
+function get_username()
+   return exec_command("/usr/bin/whoami",nil,nil," +",false)
+end
+
 function get_os()
-   return  os.execute("/usr/bin/uname -s")
+   return exec_command("/usr/bin/uname -s",nil,nil," +",false)
 end
 
 function find_first_file(files)
    -- We take a table of files, and return the first one that exists
    for file = 1, #files do
-      if file_exists(file) then
-         return file
+      if file_exists(files[file]) then
+         return files[file]
       end
    end
 end
