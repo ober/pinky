@@ -1,6 +1,7 @@
 require "lunit"
 local p = require "pinky"
 local json = require 'cjson'
+local os = p.get_os()
 
 module( "p_testcase", lunit.testcase, package.seeall )
 
@@ -30,7 +31,7 @@ function test_exec_command_df1()
 end
 
 function test_exec_command_df2()
-   if p.get_os() == "Darwin" then
+   if os == "Darwin" then
       out = p.exec_command("/bin/df", {1,2,3,4,5,6,7,8}, 9, " +",true)
    else
       out = p.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
