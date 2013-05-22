@@ -17,10 +17,16 @@ function print_table(in_table)
    print(out2)
 end
 
-out = p.dispatch(arg[1])
+local uri = arg[1]
+
+if not string.find(uri,"^/pinky/") then
+   uri = string.gsub("/pinky/" .. uri,"//","/")
+end
+
+out = p.dispatch(uri)
 
 if type(out) == "table" then
-   print("XXX FIXME: " .. arg[1] .. " is not sending me json back!")
+   print("XXX FIXME: " .. uri .. " is not sending me json back!")
    if out.status then
       if out.status.value == "FAIL" then
          print("msg:" .. tostring(out.status.error) .. " data:" .. tostring(out.data))
