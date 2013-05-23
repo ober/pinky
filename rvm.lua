@@ -31,8 +31,12 @@ end
 function rvm_list_rubies()
    -- return a list of all rubies
    rvm = get_rvms()
-   cmd = "/usr/bin/env " .. rvm .. " list strings"
-   return p.exec_command(cmd,{1},1," +", true)
+   if rvm then
+      cmd = "/usr/bin/env " .. rvm .. " list strings"
+      return p.exec_command(cmd,{1},1," +", true)
+   else
+      return "Could not locate a valid rvm binary"
+   end
 end
 
 function rvm_gem_list(ruby)
