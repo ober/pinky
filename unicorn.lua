@@ -16,12 +16,12 @@ function unicorn_check_version()
    local out = {
       data =
          {
-            current = posix.readlink("/data/api/current"),
-            master_wd = posix.readlink("/proc/" .. p.trim(p.read_file("/data/api/var/unicorn.pid")) .. "/cwd"),
-         },
+            current = posix.readlink("/data/api/current");
+            master_wd = posix.readlink("/proc/" .. p.trim(p.read_file("/data/api/var/unicorn.pid")) .. "/cwd");
+         };
       status =
          {
-               value, error = ""
+               value, error = "";
          }
    }
 
