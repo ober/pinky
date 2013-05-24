@@ -199,3 +199,22 @@ end
 function trim(s)
   return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
+
+function get_ip(hostname)
+   local socket = require 'socket'
+   return tostring(socket.dns.toip(hostname))
+end
+
+function print_table(in_table)
+   local out = ""
+   for k,v in pairs(in_table) do
+      if type(v) == "table" then
+         v = print_table(v)
+      end
+      if type(k) == "table" then
+         k = print_table(k)
+      end
+      out = out .. " " .. k .. " " .. v
+   end
+   return out
+end

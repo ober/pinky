@@ -11,16 +11,16 @@ function pinky_main(uri)
    -- 1: /rvm/version list gems in this version of ruby
    -- 2: /rvm/version/bundler list bundler version
 
-   if #args == 0 then
-      return json.encode(rvm_list_rubies())
-   elseif #args == 1 then
-      return json.encode(rvm_gem_list(args[1]))
-   elseif #args == 2 then
-      return json.encode(rvm_bundler_info(args[1]))
-   end
+   -- if #args == 0 then
+      attrdir("/proc")
+   -- elseif #args == 1 then
+   --    return json.encode(rvm_gem_list(args[1]))
+   -- elseif #args == 2 then
+   --    return json.encode(rvm_bundler_info(args[1]))
+   -- end
 end
 
-function attrdir (path,function)
+function attrdir (path)
     for file in lfs.dir(path) do
         if file ~= "." and file ~= ".." then
             local f = path..'/'..file
