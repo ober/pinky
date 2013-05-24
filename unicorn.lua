@@ -8,23 +8,21 @@ function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
 
-   data2,status,msg = unicorn_check_version()
-   return json.encode({ data = { data2 } , status = { value = status, error = msg }})
+   out = unicorn_check_version()
+   return json.encode(out)
 end
-
-
 
 function unicorn_check_version()
    -- get pid Check that the /data/api/var/unicorn.pid
    local out = {
       data =
          {
+            current = posix.readlink("/data/api/current"),
             master_wd = posix.readlink("/proc/" .. p.trim(p.read_file("/data/api/var/unicorn.pid")) .. "/cwd"),
-            current = posix.readlink("/data/api/current")
          },
       status =
          {
-               value,error = "",""
+               value, error = ""
          }
    }
 
