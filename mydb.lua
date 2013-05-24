@@ -1,10 +1,9 @@
-module("mydb", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 local luasql = require "luasql.mysql"
 local yaml = require "lyaml"
 
-function pinky_main(uri)
+local function pinky_main(uri)
    -- This function is the entry point.
    -- /pinky/mysql/check/host
    local out = { data = out, status = { value = "", error = ""} }
@@ -56,3 +55,5 @@ function read_mmtop_config()
    end
    return yaml.load(p.read_file(home .. "/.mmtop_config"))
 end
+
+return { pinky_main = pinky_main }

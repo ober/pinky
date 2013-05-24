@@ -1,10 +1,9 @@
-module("unicorn", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 local lfs = require 'lfs'
 local posix = require 'posix'
 
-function pinky_main(uri)
+local function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
 
@@ -33,3 +32,5 @@ function unicorn_check_version()
    end
    return out
 end
+
+return { pinky_main = pinky_main }

@@ -1,8 +1,7 @@
-module("process", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 
-function pinky_main(uri)
+local function pinky_main(uri)
    local args = p.split(uri,"/")
    local ps =  p.exec_command("/bin/ps aux", nil, 11, " +", true)
    local out = { data = ps, status = { value = "", error = ""} }
@@ -22,3 +21,5 @@ function search_process(ps,app,out)
    end
    return json.encode(out)
 end
+
+return { pinky_main = pinky_main }

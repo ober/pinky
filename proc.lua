@@ -1,9 +1,8 @@
-module("proc", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 local lfs = require 'lfs'
 
-function pinky_main(uri)
+local function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
@@ -37,3 +36,5 @@ function attrdir (path)
         end
     end
 end
+
+return { pinky_main = pinky_main }

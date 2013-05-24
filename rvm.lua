@@ -1,8 +1,7 @@
-module("rvm", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 
-function pinky_main(uri)
+local function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
@@ -55,3 +54,5 @@ function rvm_bundler_info(ruby)
    local list = rvm_gem_list(ruby)
    return list["bundler"]
 end
+
+return { pinky_main = pinky_main }

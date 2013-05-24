@@ -1,8 +1,7 @@
-module("disk", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
 
-function pinky_main(uri)
+local function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
@@ -19,3 +18,5 @@ function report_disk()
    out.status = { value = "OK", error = "" }
    return json.encode(out)
 end
+
+return { pinky_main = pinky_main }
