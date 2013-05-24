@@ -1,7 +1,7 @@
 local json = require 'cjson'
 local lfs = require 'lfs'
 
-local debug ;
+local debug;
 local split;
 local file_exists;
 local exec_command;
@@ -17,17 +17,6 @@ local treewalker;
 local trim;
 local get_ip;
 local print_table;
-
-
-function debug (kind, msg)
-   if msg then
-      msg = kind .. ": " .. msg
-   else
-      msg = kind
-   end
-   return ngx.log(ngx.DEBUG, msg)
-end
-
 
 function file_exists(filename)
    if filename then
