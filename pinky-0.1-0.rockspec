@@ -17,6 +17,7 @@ dependencies = {
    "luasql-mysql",
    "lyaml",
    "luafilesystem",
+   "luasocket",
    "luaposx"
 }
 build = {
