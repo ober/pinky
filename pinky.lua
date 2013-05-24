@@ -1,7 +1,25 @@
 local json = require 'cjson'
 local lfs = require 'lfs'
 
-local function debug (kind, msg)
+local debug ;
+local split;
+local file_exists;
+local exec_command;
+local return_fields;
+local dispatch;
+local lsdir ;
+local read_file;
+local get_home;
+local get_username;
+local get_os;
+local find_first_file;
+local treewalker;
+local trim;
+local get_ip;
+local print_table;
+
+
+function debug (kind, msg)
    if msg then
       msg = kind .. ": " .. msg
    else
@@ -10,30 +28,8 @@ local function debug (kind, msg)
    return ngx.log(ngx.DEBUG, msg)
 end
 
--- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
-local function split(pString, pPattern)
-   if not pString or not pPattern then
-      return "pString or pPattern were nil"
-   end
-   local Table = {}  -- NOTE: use {n = 0} in Lua-5.0
-   local fpat = "(.-)" .. pPattern
-   local last_end = 1
-   local s, e, cap = pString:find(fpat, 1)
-   while s do
-      if s ~= 1 or cap ~= "" then
-         table.insert(Table,cap)
-      end
-      last_end = e+1
-      s, e, cap = pString:find(fpat, last_end)
-   end
-   if last_end <= #pString then
-      cap = pString:sub(last_end)
-      table.insert(Table, cap)
-   end
-   return Table
-end
 
-local function file_exists(filename)
+function file_exists(filename)
    if filename then
       local fd = io.open(filename,"r")
       if fd then
@@ -47,7 +43,7 @@ local function file_exists(filename)
    end
 end
 
-local function exec_command(command,fields,key_field,sep,tokenize)
+function exec_command(command,fields,key_field,sep,tokenize)
    local out_table = {}
    local out = ""
 
@@ -80,7 +76,7 @@ local function exec_command(command,fields,key_field,sep,tokenize)
    end
 end
 
-local function return_fields(in_table,fields)
+function return_fields(in_table,fields)
    local out_table = {}
    for k,v in pairs(in_table) do
       for I = 1, #fields do
@@ -96,7 +92,7 @@ local function return_fields(in_table,fields)
    return out_table
 end
 
-local function dispatch(uri)
+function dispatch(uri)
    local uri = split(uri,"/")
    local PINKY_HOME = "/data/pinky-server/vendor/projects/pinky/"
    local custom_lib = uri[2]
@@ -132,7 +128,7 @@ local function dispatch(uri)
 end
 
 
-local function lsdir (path)
+function lsdir (path)
    local out_table = {}
    for file in lfs.dir(path) do
       if file ~= "." and file ~= ".." then
@@ -142,14 +138,14 @@ local function lsdir (path)
    return out_table
 end
 
-local function read_file(file)
+function read_file(file)
    local fd = io.open(file, "rb")
    local guts = fd:read("*all")
    fd:close()
    return guts
 end
 
-local function get_home()
+function get_home()
    local OS = get_os()
    local USER = get_username()
    if OS == "Darwin" then
@@ -161,15 +157,15 @@ local function get_home()
    end
 end
 
-local function get_username()
+function get_username()
    return exec_command("/usr/bin/whoami",nil,nil," +",false)
 end
 
-local function get_os()
+function get_os()
    return exec_command("/usr/bin/uname -s",nil,nil," +",false)
 end
 
-local function find_first_file(files)
+function find_first_file(files)
    -- We take a table of files, and return the first one that exists
    for file = 1, #files do
       if file_exists(files[file]) then
@@ -178,7 +174,7 @@ local function find_first_file(files)
    end
 end
 
-local function treewalker(path)
+function treewalker(path)
     for file in lfs.dir(path) do
         if file ~= "." and file ~= ".." then
             local f = path..'/'..file
@@ -196,11 +192,11 @@ local function treewalker(path)
     end
 end
 
-local function trim(s)
+function trim(s)
   return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
-local function get_ip(hostname)
+function get_ip(hostname)
    local socket = require 'socket'
    host = socket.dns.toip(hostname)
    if host then
@@ -210,7 +206,7 @@ local function get_ip(hostname)
    end
 end
 
-local function print_table(in_table)
+function print_table(in_table)
    local out = ""
    for k,v in pairs(in_table) do
       if type(v) == "table" then
@@ -223,6 +219,31 @@ local function print_table(in_table)
    end
    return out
 end
+
+
+-- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
+function split(pString, pPattern)
+   if not pString or not pPattern then
+      return "pString or pPattern were nil"
+   end
+   local Table = {}  -- NOTE: use {n = 0} in Lua-5.0
+   local fpat = "(.-)" .. pPattern
+   local last_end = 1
+   local s, e, cap = pString:find(fpat, 1)
+   while s do
+      if s ~= 1 or cap ~= "" then
+         table.insert(Table,cap)
+      end
+      last_end = e+1
+      s, e, cap = pString:find(fpat, last_end)
+   end
+   if last_end <= #pString then
+      cap = pString:sub(last_end)
+      table.insert(Table, cap)
+   end
+   return Table
+end
+
 
 return {
    file_exists = file_exists;
