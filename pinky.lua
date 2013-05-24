@@ -202,7 +202,12 @@ end
 
 function get_ip(hostname)
    local socket = require 'socket'
-   return tostring(socket.dns.toip(hostname))
+   host = socket.dns.toip(hostname)
+   if host then
+      return tostring(host)
+   else
+      return host
+   end
 end
 
 function print_table(in_table)
