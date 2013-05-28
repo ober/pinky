@@ -2,20 +2,20 @@ local json = require 'cjson'
 local lfs = require 'lfs'
 
 local debug;
-local split;
-local file_exists;
-local exec_command;
-local return_fields;
 local dispatch;
+local exec_command;
+local file_exists;
+local find_first_file;
+local get_home;
+local get_ip;
+local get_os;
+local get_username;
 local lsdir ;
 local read_file;
-local get_home;
-local get_username;
-local get_os;
-local find_first_file;
+local return_fields;
+local split;
 local treewalker;
 local trim;
-local get_ip;
 local print_table;
 
 function file_exists(filename)
@@ -235,19 +235,19 @@ end
 
 
 return {
-   file_exists = file_exists;
+   dispatch = dispatch;
    exec_command = exec_command;
+   file_exists = file_exists;
+   find_first_file = find_first_file;
+   get_home = get_home;
+   get_ip = get_ip;
+   get_os = get_os;
+   get_username = get_username;
+   lsdir  = lsdir ;
+   print_table = print_table;
+   read_file = read_file;
    return_fields = return_fields;
    split = split;
-   dispatch = dispatch;
-   lsdir  = lsdir ;
-   read_file = read_file;
-   get_home = get_home;
-   get_username = get_username;
-   get_os = get_os;
-   find_first_file = find_first_file;
    treewalker = treewalker;
    trim = trim;
-   get_ip = get_ip;
-   print_table = print_table;
 }
