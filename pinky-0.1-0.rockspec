@@ -19,7 +19,6 @@ dependencies = {
    "luafilesystem",
    "luasocket",
    "luaposix",
-   "busted"
 }
 build = {
    type = "builtin",
