@@ -14,9 +14,9 @@
 
 ***** Every custom module require a preamble containing the following.
 #+BEGIN_SRC lua
-module("rvm", package.seeall)
 local p = require 'pinky'
 local json = require 'cjson'
+
 #+END_SRC
       This covers pulling in pinky core as well as json for output
       formatting.
@@ -24,27 +24,33 @@ local json = require 'cjson'
       Additionally you are required to create an entry function
       called main that takes the truncated uri as it's sole argument.
 
+
 #+BEGIN_SRC lua
-function pinky_main(uri)
+local empty;
+local foo;
+local bar;
+#+END_SRC
+      Here we provide declarations of each function as local.
+
+#+BEGIN_SRC lua
+local function pinky_main(uri)
    -- This function is the entry point.
+   -- We are passed the rest of the uri.
    local args = p.split(uri,"/")
-   -- Arguments:
-   -- 0: /rvm                 we list rubies
-   -- 1: /rvm/version         list gems in this version of ruby
-   -- 2: /rvm/version/bundler list bundler version
 
    if #args == 0 then
-      return rvm_list_rubies()
+      return json.encode("Hello controller called with no args! (e.g. http://localhost/pinky/hello)"
    elseif #args == 1 then
-      return rvm_gem_list(args[1])
+      return json.encode("Hello controller called with one arg, foo! (e.g. http://localhost/pinky/hello/foo)"
    elseif #args == 2 then
-      return rvm_bundler_info(args[1])
+      return json.encode("Hello controller called with two arg, foo! (e.g. http://localhost/pinky/hello/foo)"
    end
 end
+
 #+END_SRC
 
       We strip out all previous portions of the url including the
-      controller name (e.g. "/rvm/")
+      controller name (e.g. "/hello/")
 
       Each plugin is can enforces its own rest argument format.
       In this example we have three levels.
@@ -53,23 +59,29 @@ end
       provided.
 
 #+BEGIN_SRC lua
-function rvm_list_rubies()
-   -- return a list of all rubies
-   return json.encode(p.lsdir(RVM_PATH .. "/wrappers/"))
+function empty()
+   return "Hello controller called with no args! (e.g. http://localhost/pinky/hello)"
 end
 
-function rvm_gem_list(ruby)
-   -- return gem list of the ruby provided
-   cmd = RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
-   return json.encode(p.exec_command(cmd, {2,3,4,5,6}, 1, " +",true))
+function foo()
+   return "Hello controller called with one arg, foo! (e.g. http://localhost/pinky/hello/foo)"
 end
 
-function rvm_bundler_info(ruby)
-   -- Return the bundler specific information on this bundler
-   cmd = RVM_PATH .. "/gems/" .. ruby .. "@global/bin/bundle info"
-   return json.encode(p.exec_command(cmd,{1,2,3,4,5,6}, 1, " +", true))
+function bar()
+   return "Hello controller called with two args, foo and bar! (e.g. http://localhost/pinky/hello/foo/bar)"
 end
+
 #+END_SRC lua
+
+      Finally we export which functions are publicly available.
+
+#+BEGIN_SRC lua
+      return { pinky_main = pinky_main }
+#+END_SRC
+
+      For almost all cases only pinky_main should be exported.
+      Unless there is a need to make the functions available inside
+      other plugins.
 
 *** Nginx configuration
     You will need to include the following in your nginx.conf
@@ -101,11 +113,10 @@ end
         - true = return table
         - nil  = return string
 
-
 ***** dispatch(uri)
-      Handler for all /pinkyc/ functions.
+      Handler for all /pinky/ functions.
 
-      Any calls to /pinkyc/foo will result in
+      Any calls to /pinky/foo will result in
       foo.lua being loaded if it exists.
       Then foo.pinky_main() will be called with the uri relative to /pinky/
 
@@ -119,5 +130,71 @@ end
       Iterate over a table and
 ***** return_fields(in_table,fields)
 ***** show_functions(module)
+
 ***** split(pString, pPattern)
       Split a string into a table with pattern.
+
+***** dispatch(uri)
+      Handler for all /pinky/ functions.
+
+      Any calls to /pinky/foo will result in
+      foo.lua being loaded if it exists.
+      Then foo.pinky_main() will be called with the uri relative to /pinky/
+
+***** exec_command(command,fields,key_field,sep,tokenize)
+      This function handles executing external commands.
+
+      The arguments are:
+      - command: A String containing the full path to the binary and its arguments.
+      - Fields: A table of the numeric positions to return.
+      - Key_field: The position to use as the hash key.
+      - Sep: Regular expression to split each line of output from
+        command.
+      - Tokenize: Boolean to return output as a table, or a string.
+        - true = return table
+        - nil  = return string
+
+
+***** file_exists(filename)
+      Function to verify a fully qualified path/file exists.
+      Returns boolean.
+
+***** find_first_file(array_of_files)
+      This function takes a list of files and returns the first one
+      that exists. Given platform differences we may have several
+      places we look for something like rvm. With this we return the
+      first one found.
+
+***** get_home
+      return the home directory of the current user pinky is running
+      as.
+
+***** get_ip(hostname)
+      resolve the hostname provided to us.
+      We use this to avoid using user input directly in commands.
+
+***** get_os
+      Return operating system name as seen by uname.
+
+***** get_username
+      Return full username of the current pinky process.
+
+***** lsdir(directory)
+      Return a table of all of the files/directories listed within.
+
+***** return_fields
+      Used in exec_command to return only those columns requested.
+
+***** split(string,delimiter)
+      Lua lacks a natural string#split command so this provides it.
+
+***** treewalker(path,function)
+      This function will walk a directory tree returning all files it
+      finds. This is used in items like /proc where we want the full
+      ps tree.
+
+***** trim(string)
+      Remove trailing white space.
+
+***** print_table(table)
+      Debug method used when resolving problems.
