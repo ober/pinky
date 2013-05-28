@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>README</title>
-<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="README"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-05-10 16:53:33 PDT"/>
-<meta name="author" content="jaimef"/>
+<meta name="generated" content="2013-05-28T10:25-0700"/>
+<meta name="author" content="Jaime Fournier"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
 <style type="text/css">
@@ -61,6 +61,30 @@
   /*]]>*/-->
 </style>
 <script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
 <!--/*--><![CDATA[/*><!--*/
  function CodeHighlightOn(elem, id)
  {
@@ -144,23 +168,19 @@
 <div class="outline-text-4" id="text-1-2-1">
 
 <ul>
-<li id="sec-1-2-1-1">/pinky/ Core plugins.<br/>
-</li>
-</ul>
-<ul>
-<li id="sec-1-2-1-2">/pinkyc/ - Custom plugins<br/>
-     Custom modules are loaded here.
+<li id="sec-1-2-1-1">/pinky/ -<br/>
+     All modules are loaded from here.
      There is no requirement for nginx.conf additions as a catchall
-     for pinky.dispatch() is handled via /pinkyc/*
+     for pinky.dispatch() is handled via /pinky/*
 
 <ul>
-<li id="sec-1-2-1-2-1">Every custom module require a preamble containing the following.<br/>
+<li id="sec-1-2-1-1-1">Every custom module require a preamble containing the following.<br/>
 
 
 
-<pre class="example">module("rvm", package.seeall)
-local p = require 'pinky'
+<pre class="example">local p = require 'pinky'
 local json = require 'cjson'
+
 </pre>
 
 <p>
@@ -174,28 +194,38 @@ local json = require 'cjson'
 
 
 
-<pre class="example">function main(uri)
+
+<pre class="example">local empty;
+local foo;
+local bar;
+</pre>
+
+<p>
+      Here we provide declarations of each function as local.
+</p>
+
+
+
+<pre class="example">local function pinky_main(uri)
    -- This function is the entry point.
+   -- We are passed the rest of the uri.
    local args = p.split(uri,"/")
-   -- Arguments:
-   -- 0: /rvm we list rubies
-   -- 1: /rvm/version list gems in this version of ruby
-   -- 2: /rvm/version/bundler list bundler version
 
    if #args == 0 then
-      return rvm_list_rubies()
+      return json.encode("Hello controller called with no args! (e.g. http://localhost/pinky/hello)"
    elseif #args == 1 then
-      return rvm_gem_list(args[1])
+      return json.encode("Hello controller called with one arg, foo! (e.g. http://localhost/pinky/hello/foo)"
    elseif #args == 2 then
-      return rvm_bundler_info(args[1])
+      return json.encode("Hello controller called with two arg, foo! (e.g. http://localhost/pinky/hello/foo)"
    end
 end
+
 </pre>
 
 
 <p>
       We strip out all previous portions of the url including the
-      controller name (e.g. "/rvm/")
+      controller name (e.g. "/hello/")
 </p>
 <p>
       Each plugin is can enforces its own rest argument format.
@@ -208,27 +238,36 @@ end
 
 
 
-<pre class="example">function rvm_list_rubies()
-   -- return a list of all rubies
-   return json.encode(p.lsdir(RVM_PATH .. "/wrappers/"))
+<pre class="example">function empty()
+   return "Hello controller called with no args! (e.g. http://localhost/pinky/hello)"
 end
 
-function rvm_gem_list(ruby)
-   -- return gem list of the ruby provided
-   cmd = RVM_PATH .. "/wrappers/" .. ruby .. "/gem list"
-   return json.encode(p.exec_command(cmd, {2,3,4,5,6}, 1, " +",true))
+function foo()
+   return "Hello controller called with one arg, foo! (e.g. http://localhost/pinky/hello/foo)"
 end
 
-function rvm_bundler_info(ruby)
-   -- Return the bundler specific information on this bundler
-   cmd = RVM_PATH .. "/gems/" .. ruby .. "@global/bin/bundle info"
-   return json.encode(p.exec_command(cmd,{1,2,3,4,5,6}, 1, " +", true))
+function bar()
+   return "Hello controller called with two args, foo and bar! (e.g. http://localhost/pinky/hello/foo/bar)"
 end
+
 </pre>
 
 
+<p>
+      Finally we export which functions are publicly available.
+</p>
 
 
+
+<pre class="example">return { pinky_main = pinky_main }
+</pre>
+
+
+<p>
+      For almost all cases only pinky_main should be exported.
+      Unless there is a need to make the functions available inside
+      other plugins.
+</p>
 </li>
 </ul>
 </li>
@@ -247,11 +286,10 @@ end
 
 <pre class="example">server {
     listen 44444;
-    location = /pinky/ {
+    location ~ /pinky/* {
         content_by_lua '
         local pinky = require("pinky")
-        -- ngx.say(pinky.dispatch())
-        nginx.say(type(ngx.var))
+        ngx.say(pinky.dispatch(ngx.var.uri))
         ';
     }
 }
@@ -297,17 +335,16 @@ end
 </ul>
 
 
-
 </li>
 </ul>
 <ul>
 <li id="sec-1-2-3-1-2">dispatch(uri)<br/>
-      Handler for all /pinkyc/ functions.
+      Handler for all /pinky/ functions.
 
 <p>
-      Any calls to /pinkyc/foo will result in
+      Any calls to /pinky/foo will result in
       foo.lua being loaded if it exists.
-      Then foo.main will be called with the uri relative to /pinkyc/
+      Then foo.pinky_main() will be called with the uri relative to /pinky/
 </p>
 </li>
 </ul>
@@ -334,87 +371,134 @@ end
 </ul>
 <ul>
 <li id="sec-1-2-3-1-7">show_functions(module)<br/>
+
 </li>
 </ul>
 <ul>
 <li id="sec-1-2-3-1-8">split(pString, pPattern)<br/>
       Split a string into a table with pattern.
 
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-3-1-9">dispatch(uri)<br/>
+      Handler for all /pinky/ functions.
+
+<p>
+      Any calls to /pinky/foo will result in
+      foo.lua being loaded if it exists.
+      Then foo.pinky_main() will be called with the uri relative to /pinky/
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-1-2-3-1-10">exec_command(command,fields,key_field,sep,tokenize)<br/>
+      This function handles executing external commands.
+
+<p>
+      The arguments are:
+</p><ul>
+<li>command: A String containing the full path to the binary and its arguments.
+</li>
+<li>Fields: A table of the numeric positions to return.
+</li>
+<li>Key_field: The position to use as the hash key.
+</li>
+<li>Sep: Regular expression to split each line of output from
+        command.
+</li>
+<li>Tokenize: Boolean to return output as a table, or a string.
+<ul>
+<li>true = return table
+</li>
+<li>nil  = return string
+</li>
+</ul>
 
 </li>
 </ul>
-</li>
-</ul>
-<ul>
-<li id="sec-1-2-3-2">Alerts<br/>
-<ul>
-<li id="sec-1-2-3-2-1">alert_check_port(host,port)<br/>
-</li>
-</ul>
-<ul>
-<li id="sec-1-2-3-2-2">alert_check_process(app)<br/>
+
+
 
 </li>
 </ul>
+<ul>
+<li id="sec-1-2-3-1-11">file_exists(filename)<br/>
+      Function to verify a fully qualified path/file exists.
+      Returns boolean.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3">Reports<br/>
-<ul>
-<li id="sec-1-2-3-3-1">reports(check_type)<br/>
-      Entry point for all reports.
+<li id="sec-1-2-3-1-12">find_first_file(array_of_files)<br/>
+      This function takes a list of files and returns the first one
+      that exists. Given platform differences we may have several
+      places we look for something like rvm. With this we return the
+      first one found.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-2">report_disk()<br/>
+<li id="sec-1-2-3-1-13">get_home<br/>
+      return the home directory of the current user pinky is running
+      as.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-3">report_iostat()<br/>
+<li id="sec-1-2-3-1-14">get_ip(hostname)<br/>
+      resolve the hostname provided to us.
+      We use this to avoid using user input directly in commands.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-4">report_load()<br/>
+<li id="sec-1-2-3-1-15">get_os<br/>
+      Return operating system name as seen by uname.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-5">report_memfree()<br/>
+<li id="sec-1-2-3-1-16">get_username<br/>
+      Return full username of the current pinky process.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-6">report_mpstat()<br/>
+<li id="sec-1-2-3-1-17">lsdir(directory)<br/>
+      Return a table of all of the files/directories listed within.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-7">report_net()<br/>
+<li id="sec-1-2-3-1-18">return_fields<br/>
+      Used in exec_command to return only those columns requested.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-8">report_ps()<br/>
+<li id="sec-1-2-3-1-19">split(string,delimiter)<br/>
+      Lua lacks a natural string#split command so this provides it.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-9">report_sar()<br/>
+<li id="sec-1-2-3-1-20">treewalker(path,function)<br/>
+      This function will walk a directory tree returning all files it
+      finds. This is used in items like /proc where we want the full
+      ps tree.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-10">report_socks()<br/>
+<li id="sec-1-2-3-1-21">trim(string)<br/>
+      Remove trailing white space.
+
 </li>
 </ul>
 <ul>
-<li id="sec-1-2-3-3-11">report_uptime()<br/>
-</li>
-</ul>
-<ul>
-<li id="sec-1-2-3-3-12">report_vm()<br/>
-</li>
-</ul>
-<ul>
-<li id="sec-1-2-3-3-13">report_vmstat()<br/>
-</li>
-</ul>
-<ul>
-<li id="sec-1-2-3-3-14">report_who()<br/>
+<li id="sec-1-2-3-1-22">print_table(table)<br/>
+      Debug method used when resolving problems.
 </li>
 </ul>
 </li>
@@ -426,9 +510,9 @@ end
 </div>
 
 <div id="postamble">
-<p class="date">Date: 2013-05-10 16:53:33 PDT</p>
-<p class="author">Author: jaimef</p>
-<p class="creator">Org version 7.8.11 with Emacs version 24</p>
+<p class="date">Date: 2013-05-28T10:25-0700</p>
+<p class="author">Author: Jaime Fournier</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
 <a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
 
 </div>
