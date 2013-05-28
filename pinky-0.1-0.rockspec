@@ -18,7 +18,8 @@ dependencies = {
    "lyaml",
    "luafilesystem",
    "luasocket",
-   "luaposix"
+   "luaposix",
+   "busted"
 }
 build = {
    type = "builtin",
