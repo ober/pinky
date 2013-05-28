@@ -135,7 +135,6 @@ end
 
 -- get_os
 function test_get_os()
-
 end
 
 -- get_home
