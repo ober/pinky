@@ -17,6 +17,7 @@ local split;
 local treewalker;
 local trim;
 local print_table;
+local xml_find_tags;
 
 function file_exists(filename)
    if filename then
@@ -195,6 +196,16 @@ function get_ip(hostname)
    end
 end
 
+function xml_find_tags(xmldata,tags)
+   local xml2 = require 'LuaXml'
+   local x = xml.eval(xmldata)
+   out = {}
+   for i,t in ipairs(tags) do
+      out[t] = xml.find(x,t)[1]
+   end
+   return out
+end
+
 function print_table(in_table)
    local out = ""
    for k,v in pairs(in_table) do
@@ -233,7 +244,6 @@ function split(pString, pPattern)
    return Table
 end
 
-
 return {
    dispatch = dispatch;
    exec_command = exec_command;
@@ -250,4 +260,5 @@ return {
    split = split;
    treewalker = treewalker;
    trim = trim;
+   xml_find_tags = xml_find_tags;
 }
