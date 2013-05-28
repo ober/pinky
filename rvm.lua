@@ -1,7 +1,12 @@
 local p = require 'pinky'
 local json = require 'cjson'
 
-local function pinky_main(uri)
+local pinky_main;
+local get_rvms;
+local rvm_list_rubies;
+local rvm_gem_list;
+
+function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
