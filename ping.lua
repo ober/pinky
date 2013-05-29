@@ -28,7 +28,7 @@ function report_ping(host)
       local unknown = 'ping: unknown host'
       local failure = '100%% packet loss,'
       local success = ' 0%% packet loss,'
-      local success_osx = ' 0.0%% packet loss,'
+      local success_osx = ' 0.0%% packet loss'
       local out = { data = { ping_out }, status = { value = "", error = ""} }
 
       if ping_out then
