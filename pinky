@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
-package.cpath = package.cpath .. ";" .. os.getenv("HOME") .. "/.luarocks/lib/lua/5.1/?.so;;"
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.luarocks/share/lua/5.1/?.lua;;"
+package.cpath = package.cpath .. ";" .. os.getenv("PINKY_HOME") .. "/.luarocks/lib/lua/5.1/?.so;;"
+package.path = package.path .. ";" .. os.getenv("PINKY_HOME") .. "/.luarocks/share/lua/5.1/?.lua;;"
 
 local p = require 'pinky'
 
