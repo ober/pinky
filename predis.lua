@@ -6,9 +6,8 @@ local redis = require "redis"
 local pinky_main;
 local usage;
 local redis_check;
-local redis_check;
+local redis_getdata;
 local resque_check;
-local resque_queues;
 
 local pstatus = {
    data = {};
@@ -38,8 +37,10 @@ local function pinky_main(uri)
    else
       if args[1] == "up" then
          redis_check()
-      elseif args[1] == "resque" then
-         resque_check()
+      elseif args[1] == "workers" then
+         resque_getdata("resque:workers","resque:worker:")
+      elseif args[1] == "queues" then
+         resque_getdata("resque:queues","resque:queue:")
       else
          usage()
       end
@@ -59,19 +60,33 @@ function redis_check()
    pstatus.status.value,pstatus.data = "OK", response
 end
 
-function resque_check()
+function resque_getdata(set,short)
+   set = set or 'resque:workers'
    local client = redis_connect()
-   for i, v in ipairs(client:smembers('resque:workers')) do
+   print("smember type is : " .. client:type(set))
+   for i, v in ipairs(client:smembers(set)) do
+      v = short .. v
       if v then
-         print(i .. tostring(v))
-         pstatus.data[tostring(v)] = tostring(client:get(v))
+         local type = client:type(v)
+         if type == "list" then
+            local len = client:llen(v)
+            if len then
+               for l=1,len,1 do
+                  pstatus.data[tostring(v)] = tostring(client:lindex(v,l - 1))
+               end
+            else
+               print("Empty list")
+            end
+         elseif type == "none" then
+            print("got v:" .. v .. " type:" .. type)
+            pstatus.data[tostring(v)] = tostring(client:get(v))
+         elseif type == "string" then
+            pstatus.data[tostring(v)] = tostring(client:get(v))
+         else
+            print("Unknown type:", client:type(v))
+         end
       end
    end
-end
-
-function resque_queues()
-   local client = redis_connect()
-   pstatus.data = client:smembers('resque:queues')
 end
 
 return { pinky_main = pinky_main }
