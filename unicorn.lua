@@ -3,6 +3,8 @@ local json = require 'cjson'
 local lfs = require 'lfs'
 local posix = require 'posix'
 
+local pstatus = { data = {}, status = { value = "OK", error = ""}}
+
 local pinky_main;
 local unicorn_check_version;
 
