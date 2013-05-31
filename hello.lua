@@ -5,6 +5,7 @@ local empty;
 local foo;
 local bar;
 
+local pstatus = { data = {}, status = { value = "OK", error = ""}}
 
 local function pinky_main(uri)
    -- This function is the entry point.

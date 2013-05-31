@@ -1,5 +1,4 @@
 local p = require 'pinky'
-
 local json = require 'cjson'
 local redis = require "redis"
 
@@ -15,8 +14,6 @@ local redis_getdata;
 local resque_check;
 local singularize;
 local usage;
-
-
 
 local pstatus = {
    data = {};

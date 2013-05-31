@@ -4,8 +4,9 @@ local json = require 'cjson'
 local success = "succeeded!"
 local failure = "failed: Connection refused"
 
+local pstatus = { data = {}, status = { value = "OK", error = ""}}
+
 local usage = {
-   data = "";
    status = {
       value = "FAIL";
       error = [[
@@ -27,10 +28,14 @@ local function pinky_main(uri)
    local ip = p.get_ip(tostring(ip))
 
    if ip then
+      pstatus.data = report_port(ip,port)
       return json.encode(report_port(ip,port))
    else
-      return json.encode({ data = {}, status = { value = "FAIL", error = "Could not resolve the host provided or the port" }})
+      pstatus.status.value,pstatus.status.error = "FAIL", "Could not resolve the host provided or the port"
    end
+
+
+   return json_encode(pstatus)
 end
 
 function report_port(host,port)
@@ -40,17 +45,16 @@ function report_port(host,port)
       return p.print_table(nc)
    end
 
-   local out = { data = { nc }, status = { value = "", error = ""} }
    if nc then
       if string.match(nc,failure) then
-         out.status.value,out.status.error  = "FAIL", failure
+         pstatus.status.value,pstatus.status.error  = "FAIL", failure
       elseif string.match(nc,success) then
-         out.status.value = "OK"
+         pstatus.status.value = "OK"
       else
-         out.status.value,out.status.error  = "FAIL", nc
+         pstatus.status.value,pstatus.status.error  = "FAIL", nc
       end
    else
-      out.status.value,out.status.error  = "FAIL", "nc returned nil"
+      pstatus.status.value,pstatus.status.error  = "FAIL", "nc returned nil"
    end
    return json.encode(out)
 end

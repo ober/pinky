@@ -1,25 +1,27 @@
 local p = require 'pinky'
 local json = require 'cjson'
 
-local function pinky_main(uri)
-   local args = p.split(uri,"/")
-   local ps =  p.exec_command("/bin/ps aux", nil, 11, " +", true)
-   local out = { data = ps, status = { value = "", error = ""} }
+local pinky_main;
+local search_process;
+local pstatus = { data = {}, status = { value = "OK", error = ""}}
 
-   if #args == 0 then
-      return json.encode(out)
-   elseif #args == 1 then
-      return search_process(ps,args[1],out)
+function pinky_main(uri)
+   local args = p.split(uri,"/")
+
+   pstatus.data = p.exec_command("/bin/ps aux", nil, 11, " +", true)
+   if #args == 1 then
+      search_process(ps,args[1],out)
    end
+
+   return json.encode(pstatus)
 end
 
 function search_process(ps,app,out)
    if ps[app] then
-      out.status.value,out.data = "OK", ps[app]
+      pstatus.status.value,pstatus.data = "OK", ps[app]
    else
-      out.status.value,out.status.error = "FAIL", "Could not find a process that matched " .. app
+      pstatus.status.value,pstatus.status.error = "FAIL", "Could not find a process that matched " .. app
    end
-   return json.encode(out)
 end
 
 return { pinky_main = pinky_main }

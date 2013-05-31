@@ -2,7 +2,11 @@ local p = require 'pinky'
 local json = require 'cjson'
 local lfs = require 'lfs'
 
-local function pinky_main(uri)
+local pinky_main;
+local attrdir;
+local pstatus = { data = {}, status = { value = "OK", error = ""}}
+
+function pinky_main(uri)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
@@ -29,9 +33,9 @@ function attrdir (path)
             if attr.mode == "directory" then
                 attrdir (f)
             else
-                for name, value in pairs(attr) do
-                    print (name, value)
-                end
+               for name, value in pairs(attr) do
+                  print (name, value)
+               end
             end
         end
     end
