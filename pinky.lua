@@ -215,6 +215,12 @@ function print_table(in_table)
       if type(k) == "table" then
          k = print_table(k)
       end
+      if type(v) == "function" then
+         v = tostring(v)
+      end
+      if type(k) == "function" then
+         k = tostring(k)
+      end
       out = out .. " " .. k .. " " .. v
    end
    return out
