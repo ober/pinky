@@ -25,7 +25,7 @@ function report_disk()
    -- Disk report.
    -- Return the output of df(1)
    pstatus.data = p.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
-   pstatus.data..Mounted = nil -- remove header
+   pstatus.data.Mounted = nil -- remove header
    pstatus.status.value = "OK"
 end
 
