@@ -8,8 +8,8 @@ function pinky_main(uri)
    local args = p.split(uri,"/")
    -- Arguments:
 
-   pstat.data = report_vmstat(args[1],args[2])
-   return json.encode(pstat)
+   pstatus.data = report_vmstat(args[1],args[2])
+   return json.encode(pstatus)
 end
 
 function report_vmstat()
