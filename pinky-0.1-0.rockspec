@@ -19,7 +19,8 @@ dependencies = {
    "luafilesystem",
    "luasocket",
    "luaposix",
-   "luaxml"
+   "luaxml",
+   "redis-lua"
 }
 build = {
    type = "builtin",
