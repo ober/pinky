@@ -39,7 +39,7 @@ build = {
       pinky_proc = "pinky_proc.lua",
       pinky_process  = "pinky_process.lua",
       pinky_rvm = "pinky_rvm.lua",
-      pinky_status  = "pinky_predis.lua",
+      pinky_stat  = "pinky_stat.lua",
       pinky_unicorn = "pinky_unicorn.lua",
       pinky_vmstat = "pinky_vmstat.lua"
    },
