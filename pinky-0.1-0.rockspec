@@ -33,6 +33,7 @@ build = {
       pinky_net = "pinky_net.lua",
       pinky_passenger = "pinky_passenger.lua",
       pinky_ping= "pinky_ping.lua",
+      pinky = "pinky.lua",
       pinky_port = "pinky_port.lua",
       pinky_predis  = "pinky_predis.lua",
       pinky_proc = "pinky_proc.lua",
