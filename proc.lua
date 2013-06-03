@@ -1,29 +1,19 @@
 local p = require 'pinky'
-local json = require 'cjson'
 local lfs = require 'lfs'
 
 local pinky_main;
 local attrdir;
-local pstatus = { data = {}, status = { value = "OK", error = ""}}
 
-function pinky_main(uri)
+function pinky_main(uri,ps)
    -- This function is the entry point.
    local args = p.split(uri,"/")
-   -- Arguments:
-   -- 0: /rvm we list rubies
-   -- 1: /rvm/version list gems in this version of ruby
-   -- 2: /rvm/version/bundler list bundler version
-
-   -- if #args == 0 then
-      attrdir("/proc")
-   -- elseif #args == 1 then
-   --    return json.encode(rvm_gem_list(args[1]))
-   -- elseif #args == 2 then
-   --    return json.encode(rvm_bundler_info(args[1]))
-   -- end
+   ps.dir = "/proc"
+   ps = attrdir(ps)
+   return ps
 end
 
-function attrdir (path)
+function attrdir (ps)
+   local dir = ps.dir
     for file in lfs.dir(path) do
         if file ~= "." and file ~= ".." then
             local f = path..'/'..file
@@ -39,6 +29,7 @@ function attrdir (path)
             end
         end
     end
+    return ps
 end
 
 return { pinky_main = pinky_main }

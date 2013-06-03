@@ -1,30 +1,26 @@
 local p = require 'pinky'
-local json = require 'cjson'
-
 
 local pinky_main;
 local report_ping;
 
-local pstatus = { data = {}, status = { value = "OK", error = ""}}
-
-local function pinky_main(uri)
+local function pinky_main(uri,ps)
    -- This function is the entry point.
    local args = p.split(uri,"/")
    -- Arguments:
    -- 0: /port we return usage
-   local ip = p.get_ip(tostring(args[1]))
+   ps.ip = p.get_ip(tostring(args[1]))
    if ip then
-      report_ping(ip)
+      ps = report_ping(ps)
    else
-      pstatus.status.value,pstatus.status.error = "FAIL", "Could not resolve the host provided "
+      ps.status.value,ps.status.error = "FAIL", "Could not resolve the host provided "
    end
 
-   return json.encode(pstatus)
+   return ps
 end
 
-function report_ping(host)
-
+function report_ping(ps)
    local host_os = p.get_os()
+   local host = ps.ip
    if host_os == "Darwin" then
       ping = "/sbin/ping -n -c 1 -W 1 " .. host
    elseif host_os == "Linux" then
@@ -37,24 +33,25 @@ function report_ping(host)
       local failure = '100%% packet loss,'
       local success = ' 0%% packet loss,'
       local success_osx = ' 0.0%% packet loss'
-      pstatus.data = ping_out
+      ps.data = ping_out
 
       if ping_out then
          if string.find(ping_out,failure) then
-            pstatus.status.value,pstatus.status.error  = "FAIL", failure
+            ps.status.value,ps.status.error  = "FAIL", failure
          elseif string.find(ping_out,success) then
-            pstatus.status.value = "OK"
+            ps.status.value = "OK"
          elseif string.find(ping_out,success_osx) then
-            pstatus.status.value = "OK"
+            ps.status.value = "OK"
          elseif string.find(ping_out,unknown) then
-            pstatus.status.value,pstatus.status.error  = "FAIL", unknown
+            ps.status.value,ps.status.error  = "FAIL", unknown
          else
-            pstatus.status.value,pstatus.status.error  = "FAIL", "fall through"
+            ps.status.value,ps.status.error  = "FAIL", "fall through"
          end
       else
-         pstatus.status.value,pstatus.status.error  = "FAIL", "ping returned nil"
+         ps.status.value,ps.status.error  = "FAIL", "ping returned nil"
       end
    end
+   return ps
 end
 
 return { pinky_main = pinky_main }

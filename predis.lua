@@ -1,5 +1,4 @@
 local p = require 'pinky'
-local json = require 'cjson'
 local redis = require "redis"
 
 local handle_list;
@@ -15,17 +14,9 @@ local resque_check;
 local singularize;
 local usage;
 
-local pstatus = {
-   data = {};
-   status = {
-      value = "OK";
-      error = "";
-   }
-}
-
 local function usage()
-   pstatus.status.value = "FAIL"
-   pstatus.status.error = [[
+   ps.status.value = "FAIL"
+   ps.status.error = [[
 Check Redis:
 Valid URLS:
 /pinky/predis/up      -- Check if redis is up locally.
@@ -37,7 +28,7 @@ Valid URLS:
 ]];
 end
 
-local function pinky_main(uri)
+local function pinky_main(uri,ps)
    -- This function is the entry point.
    local args = p.split(uri,"/")
 
@@ -60,7 +51,7 @@ local function pinky_main(uri)
          usage()
       end
    end
-   return json.encode(pstatus)
+   return ps
 end
 
 function redis_connect(ip,port)
@@ -72,7 +63,7 @@ end
 function redis_check()
    local client = redis_connect()
    local response = client:ping()
-   pstatus.status.value,pstatus.data = "OK", response
+   ps.status.value,ps.data = "OK", response
 end
 
 function handle_list(list,client,parent)
@@ -82,7 +73,7 @@ function handle_list(list,client,parent)
    if len then
       len = len > 2000 and 2000 or len
       for l=1,len,1 do
-         pstatus.data[parent .. list .. l] = client:lindex(parent .. list,l - 1)
+         ps.data[parent .. list .. l] = client:lindex(parent .. list,l - 1)
       end
    end
 end
@@ -90,7 +81,7 @@ end
 function handle_set(set,client,parent)
    parent = parent or ""
    for i, v in ipairs(client:smembers(set)) do
-      pstatus.data[parent .. set] = {}
+      ps.data[parent .. set] = {}
       v = singularize(set) .. ":" .. v
       if v then
          process_redis(v,client,parent)
@@ -99,11 +90,11 @@ function handle_set(set,client,parent)
 end
 
 function handle_string(string,client,parent)
-   pstatus.data[parent .. string] = client:get(parent .. string)
+   ps.data[parent .. string] = client:get(parent .. string)
 end
 
 function handle_none(none,client,parent)
-   pstatus.data[parent .. none] = client:get(parent .. none)
+   ps.data[parent .. none] = client:get(parent .. none)
 end
 
 function singularize(name)
@@ -126,6 +117,7 @@ function process_redis(something,client,parent)
    else
       print("Unknown type:" .. type)
    end
+   return ps
 end
 
 return { pinky_main = pinky_main }

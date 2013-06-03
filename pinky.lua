@@ -3,6 +3,7 @@ local lfs = require 'lfs'
 
 local debug;
 local dispatch;
+local do_error;
 local exec_command;
 local file_exists;
 local find_first_file;
@@ -10,6 +11,7 @@ local get_home;
 local get_ip;
 local get_os;
 local get_username;
+local init;
 local lsdir ;
 local read_file;
 local return_fields;
@@ -84,13 +86,15 @@ end
 
 function dispatch(uri)
    local uri = split(uri,"/")
+   local ps = init()
    local PINKY_HOME = "/data/pinky-server/vendor/projects/pinky/"
    local custom_lib = uri[2]
    -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
    local short_uri = ""
 
    if #uri < 1 then
-      return  json.encode({ data = {}, status = { value = "FAIL", error = "Unable to find functions in uri" }})
+      ps = do_error("Unable to find functions in uri", ps)
+      -- return  json.encode({ data = {}, status = { value = "FAIL", error =
    end
 
    for I=3,#uri do
@@ -98,23 +102,29 @@ function dispatch(uri)
    end
 
    if not uri[2] then
-      return json.encode({ data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }})
+      ps = do_error("No controller passed.",ps)
+      -- return json.encode({ data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }})
    end
 
    if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
       if type(custom_lib) ~= "table" then
-         return json.encode({ data = {}, status = { value = "FAIL", error = "Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib) }})
+         ps = do_error("Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib),ps)
+         -- return json.encode({ data = {}, status = { value = "FAIL", error =
       end
       if custom_lib.pinky_main then
-         return custom_lib.pinky_main(short_uri)
+         ps = custom_lib.pinky_main(short_uri,ps)
       else
-         return json.encode({ data = {}, status = { value = "FAIL", error = "Could not locate " .. uri[2] .. ".pinky_main" }})
+         ps = do_error("Could not locate " .. uri[2] .. ".pinky_main", ps)
+         -- return json.encode({ data = {}, status = { value = "FAIL", error =  }})
       end
    else
-      return json.encode({ data = {}, status = { value = "FAIL", error = "Error: could not locate " .. custom_lib }})
+      ps = do_error("Error: could not locate " .. custom_lib, ps)
+      -- return json.encode({ data = {}, status = { value = "FAIL", error =  }})
    end
+
+   return json.encode(ps)
 end
 
 
@@ -226,6 +236,17 @@ function print_table(in_table)
    return out
 end
 
+function do_error(error_msg,ps)
+   ps.status.value,ps.status.error  = "FAIL", error_msg
+end
+
+function do_usage(usage_msg,ps)
+
+end
+
+function init()
+   return { data = {}, status = { value = "OK", error = ""}}
+end
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
 function split(pString, pPattern)
@@ -252,6 +273,7 @@ end
 
 return {
    dispatch = dispatch;
+   do_error = do_error;
    exec_command = exec_command;
    file_exists = file_exists;
    find_first_file = find_first_file;
@@ -259,6 +281,7 @@ return {
    get_ip = get_ip;
    get_os = get_os;
    get_username = get_username;
+   init = init;
    lsdir  = lsdir ;
    print_table = print_table;
    read_file = read_file;

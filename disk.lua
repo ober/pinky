@@ -1,32 +1,26 @@
 local p = require 'pinky'
-local json = require 'cjson'
 
 local pinky_main;
 local report_disk;
 
-local pstatus = {
-   data = {};
-   status = {
-      value = "OK";
-      error = "";
-   }
-}
 
-local function pinky_main(uri)
-   -- This function is the entry point.
+local function pinky_main(uri,ps)
    local args = p.split(uri,"/")
+   -- This function is the entry point.
    -- Arguments:
    -- 0: /port we return usage
-   report_disk()
-   return json.encode(pstatus)
+   ps = report_disk(ps)
+
+   return ps
 end
 
-function report_disk()
+function report_disk(ps)
    -- Disk report.
    -- Return the output of df(1)
-   pstatus.data = p.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
-   pstatus.data.Mounted = nil -- remove header
-   pstatus.status.value = "OK"
+   ps.data = p.exec_command("/bin/df", {1,2,3,4,5}, 6, " +",true)
+   ps.data.Mounted = nil -- remove header
+   ps.status.value = "OK"
+   return ps
 end
 
 return { pinky_main = pinky_main }
