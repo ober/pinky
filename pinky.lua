@@ -101,7 +101,7 @@ function dispatch(uri)
       return json.encode({ data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }})
    end
 
-   if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
+   if file_exists(PINKY_HOME .. "/" .. custom_lib .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
       if type(custom_lib) ~= "table" then
