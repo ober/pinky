@@ -11,7 +11,7 @@ function pinky_main()
    if status then
       pstatus.data = p.xml_find_tags(status,{ "active", "count", "max", "global_queue_size", "app_root", "environment", "cpu", "rss", "pss", "real_memory", "vmsize", "command"  } )
    else
-      pstatus.status.value,pstatus.status.error = "FAIL
+      pstatus.status.value,pstatus.status.error = "FAIL", "Failed to get output from passenger-status"
    end
    return json.encode(pstatus)
 end
