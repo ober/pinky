@@ -28,12 +28,12 @@ local function usage()
    pstatus.status.error = [[
 Check Redis:
 Valid URLS:
-/pinky/predis/up      -- Check if redis is up locally.
-/pinky/predis/workers  -- Return resque worker information.
-/pinky/predis/queues  -- Return resque queues information.
-/pinky/predis/failed  -- Return resque failed job information. (max 2k)
-/pinky/predis/stat  -- Return resque stat entries
-/pinky/predis/loners  -- Return resque loners job entries
+/pinky/redis/up      -- Check if redis is up locally.
+/pinky/redis/workers  -- Return resque worker information.
+/pinky/redis/queues  -- Return resque queues information.
+/pinky/redis/failed  -- Return resque failed job information. (max 2k)
+/pinky/redis/stat  -- Return resque stat entries
+/pinky/redis/loners  -- Return resque loners job entries
 ]];
 end
 
