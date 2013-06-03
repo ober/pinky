@@ -6,7 +6,13 @@ local pstatus = { data = {}, status = { value = "OK", error = ""}}
 local pinky_main;
 
 function pinky_main()
-   pstatus.data = p.xml_find_tags(p.exec_command("/usr/bin/env passenger-status --show=xml"),{ "active", "count", "max", "global_queue_size", "app_root", "environment", "cpu", "rss", "pss", "real_memory", "vmsize", "command"  } )
+
+   local status = p.exec_command("/usr/bin/env passenger-status --show=xml")
+   if status then
+      pstatus.data = p.xml_find_tags(status,{ "active", "count", "max", "global_queue_size", "app_root", "environment", "cpu", "rss", "pss", "real_memory", "vmsize", "command"  } )
+   else
+      pstatus.status.value,pstatus.status.error = "FAIL
+   end
    return json.encode(pstatus)
 end
 
