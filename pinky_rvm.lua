@@ -51,7 +51,7 @@ function rvm_gem_list(ruby)
    -- return gem list of the ruby provided
    rvm = get_rvms()
    rubies = rvm_list_rubies()
-   if rubies[ruby] then
+   if rubies and rubies[ruby] then
       cmd = "/usr/bin/env " .. rvm .. " " .. rubies[ruby][1] .. " do gem list"
       pstatus.data = p.exec_command(cmd,{2},1," +", true)
    else
