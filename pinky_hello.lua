@@ -11,12 +11,13 @@ function pinky_main(uri,ps)
    local args = p.split(uri,"/")
 
    if #args == 0 then
-      return json.encode(empty())
+      ps.data = empty()
    elseif #args == 1 then
-      return json.encode(foo())
+      ps.data = foo()
    elseif #args == 2 then
-      return json.encode(bar())
+      ps.data = bar()
    end
+   return ps
 end
 
 function empty()
