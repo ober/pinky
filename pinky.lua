@@ -238,6 +238,7 @@ end
 
 function do_error(error_msg,ps)
    ps.status.value,ps.status.error  = "FAIL", error_msg
+   return ps
 end
 
 function do_usage(usage_msg,ps)
