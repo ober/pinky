@@ -88,7 +88,7 @@ function dispatch(uri)
    local uri = split(uri,"/")
    local ps = init()
    local PINKY_HOME = "/data/pinky-server/vendor/projects/pinky/"
-   local custom_lib = uri[2]
+   local custom_lib = "pinky_" .. uri[2]
    -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
    local short_uri = ""
 
