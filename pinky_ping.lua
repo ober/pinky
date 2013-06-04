@@ -8,11 +8,16 @@ local function pinky_main(uri,ps)
    local args = p.split(uri,"/")
    -- Arguments:
    -- 0: /port we return usage
-   ps.ip = p.get_ip(tostring(args[1]))
-   if ip then
-      ps = report_ping(ps)
+
+   if #args == 1 then
+      ps.ip = p.get_ip(tostring(args[1]))
+      if ps.ip then
+         ps = report_ping(ps)
+      else
+         ps.status.value,ps.status.error = "FAIL", "Could not resolve the host provided "
+      end
    else
-      ps.status.value,ps.status.error = "FAIL", "Could not resolve the host provided "
+      ps.status.value,ps.status.error = "FAIL", "Usage: /pinky/ping/<hostname>"
    end
 
    return ps

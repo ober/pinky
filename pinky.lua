@@ -123,7 +123,6 @@ function dispatch(uri)
       ps = do_error("Error: could not locate " .. custom_lib, ps)
       -- return json.encode({ data = {}, status = { value = "FAIL", error =  }})
    end
-
    return json.encode(ps)
 end
 
