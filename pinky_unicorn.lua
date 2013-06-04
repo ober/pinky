@@ -1,33 +1,28 @@
 local p = require 'pinky'
-local json = require 'cjson'
 local lfs = require 'lfs'
 local posix = require 'posix'
-
-local pstatus = { data = {}, status = { value = "OK", error = ""}}
-
 local pinky_main;
 local unicorn_check_version;
 
-function pinky_main(uri)
+function pinky_main(uri,ps)
    -- This function is the entry point.
    local args = p.split(uri,"/")
-   pstatus.data = unicorn_check_version()
-
-   return json.encode(pstatus)
+   ps = unicorn_check_version(ps)
+   return ps
 end
 
-function unicorn_check_version()
+function unicorn_check_version(ps)
    -- get pid Check that the /data/api/var/unicorn.pid
-   pstatus.data = {
+   ps.data = {
       current = posix.readlink("/data/api/current");
       master_wd = posix.readlink("/proc/" .. p.trim(p.read_file("/data/api/var/unicorn.pid")) .. "/cwd");
    }
-
-   if pstatus.data.master_wd == pstatus.data.current then
-      pstatus.status.value,pstatus.status.error = "OK",""
+   if ps.data.master_wd == ps.data.current then
+      ps.status.value,ps.status.error = "OK",""
    else
-      pstatus.status.value,pstatus.status.error = "FAIL","Current unicorn master is running from somewhere other than /data/api/current"
+      ps.status.value,ps.status.error = "FAIL","Current unicorn master is running from somewhere other than /data/api/current"
    end
+   return ps
 end
 
 return { pinky_main = pinky_main }
