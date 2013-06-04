@@ -7,24 +7,27 @@ local rvm_gem_list
 
 function pinky_main(uri,ps)
    -- This function is the entry point.
-   ps.args = p.split(uri,"/")
+   args = p.split(uri,"/")
    -- Arguments:
    -- 0: /rvm we list rubies
    -- 1: /rvm/version list gems in this version of ruby
    -- 2: /rvm/version/bundler list bundler version
 
    if #args == 0 then
-      ps = rvm_list_rubies(ps)
+      ps.data,ps.status.error = rvm_list_rubies()
    elseif #args == 1 then
-      ps = rvm_gem_list(ps)
+      ps.data,ps.status.error = rvm_gem_list(args[1])
    elseif #args == 2 then
-      ps = rvm_bundler_info(ps)
+      ps.data,ps.status.error = rvm_bundler_info(args[1])
    end
 
+   if ps.status.error then
+      ps.status.value = "FAIL"
+   end
    return ps
 end
 
-function get_rvms(ps)
+function get_rvms()
    local home = p.get_home()
    local rvms = {
       "/usr/local/rvm/bin/rvm",
@@ -33,33 +36,51 @@ function get_rvms(ps)
    return p.find_first_file(rvms)
 end
 
-function rvm_list_rubies(ps)
+function rvm_list_rubies()
    -- return a list of all rubies
-   rvm = get_rvms()
+   local rvm,err = get_rvms()
+   local data = ""
+   print(rvm)
    if rvm then
-      cmd = "/usr/bin/env " .. rvm .. " list strings"
-      ps.data = p.exec_command(cmd,{1},1," +", true)
+      local cmd = "/usr/bin/env " .. rvm .. " list strings"
+      data = p.exec_command(cmd,{1},1," +", true)
    else
-      ps.status.value, ps.status.error = "FAIL", "Could not locate a valid rvm binary"
+      err = "Could not locate a valid rvm binary"
    end
+   return data,err
 end
 
 function rvm_gem_list(ruby)
    -- return gem list of the ruby provided
-   rvm = get_rvms()
-   rubies = rvm_list_rubies()
-   if rubies and rubies[ruby] then
-      cmd = "/usr/bin/env " .. rvm .. " " .. rubies[ruby][1] .. " do gem list"
-      ps.data = p.exec_command(cmd,{2},1," +", true)
+   local data,err = ""
+   local rvm = get_rvms()
+   if not rvm then err = "no rvm" end
+   local rubies = rvm_list_rubies()
+   if not rubies then err = "no rubies" end
+   if not rubies[ruby] then err = "Could not find " .. ruby .. " in rubies" end
+
+   if rvm and rubies and rubies[ruby] then
+      local cmd = "/usr/bin/env " .. rvm .. " " .. rubies[ruby][1] .. " do gem list"
+      data = p.exec_command(cmd,{2},1," +", true)
    else
-      ps.status.value, ps.status.error = "FAIL", "Could not find " .. ruby .. " in ruby list"
+      err = "Got nil on rvm/rubies/rubies[ruby]"
    end
+   return data,err
 end
 
 function rvm_bundler_info(ruby)
    -- Return the bundler specific information on this bundler
    local list = rvm_gem_list(ruby)
-   ps.data = list["bundler"]
+   local data = list["bundler"]
+
+   print(type(data[1]))
+
+   if data and data[1] and type(data[1]) == "string" then
+      data = data[1]:gsub("[%(%)]","")
+   else
+      local err = "Could not locate bundler gem"
+   end
+   return data,err
 end
 
 return { pinky_main = pinky_main }
