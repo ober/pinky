@@ -9,11 +9,19 @@ function pinky_main(uri,ps)
    return ps
 end
 
+
 function report_vmstat(ps)
-   -- call free(1) -m and return values
-   -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   ps.data = p.exec_command("/usr/bin/vmstat -s", {1,2,3,4,5,6}, {1,2}, " +", true)
-   ps.data.total = nil
+   local out = {}
+   local cmd_out, cmd_err = io.popen("/usr/bin/vmstat -s")
+   print(type(cmd_out))
+   if cmd_out then
+      for line in cmd_out:lines() do
+        local line_array = p.split(line," +")
+        out[table.concat(line_array,"_",2)] = line_array[1]
+        print("line is " .. line)
+       end
+   end
+   ps.data = out
    return ps
 end
 
