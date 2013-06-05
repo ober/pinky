@@ -31,7 +31,8 @@ function unicorn_check_version(ps)
          ps.status.value,ps.status.error = "FAIL","Current unicorn master is running from somewhere other than /data/api/current"
       end
 
-      return ps,err
+   end
+   return ps,err
 end
 
 return { pinky_main = pinky_main }
