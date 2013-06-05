@@ -211,13 +211,17 @@ function get_ip(hostname)
 end
 
 function xml_find_tags(xmldata,tags)
-   local xml2 = require 'LuaXml'
+   local out = {}
+   require 'LuaXml'
    local x = xml.eval(xmldata)
-   out = {}
-   for i,t in ipairs(tags) do
-      out[t] = xml.find(x,t)[1]
+   if x then
+      for i,t in ipairs(tags) do
+         out[t] = xml.find(x,t)[1]
+      end
+   else
+     local err = "No xml found"
    end
-   return out
+   return out,err
 end
 
 function print_table(in_table)
