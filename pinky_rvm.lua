@@ -4,6 +4,7 @@ local pinky_main
 local get_rvms
 local rvm_list_rubies
 local rvm_gem_list
+local rvm_get_info
 
 function pinky_main(uri,ps)
    -- This function is the entry point.
@@ -18,7 +19,7 @@ function pinky_main(uri,ps)
    elseif #args == 1 then
       ps.data,ps.status.error = rvm_gem_list(args[1])
    elseif #args == 2 then
-      ps.data,ps.status.error = rvm_bundler_info(args[1])
+      ps.data,ps.status.error = rvm_gem_info(args[1],args[2])
    end
 
    if ps.status.error then
@@ -30,57 +31,47 @@ end
 function get_rvms()
    local home = p.get_home()
    local rvms = {
-      "/usr/local/rvm/bin/rvm",
-      home .. "/.rvm/bin/rvm"
+      "/usr/local/rvm/",
+      home .. "/.rvm/"
    }
    return p.find_first_file(rvms)
 end
 
 function rvm_list_rubies()
-   -- return a list of all rubies
-   local rvm,err = get_rvms()
-   local data = ""
-   print(rvm)
-   if rvm then
-      local cmd = "/usr/bin/env " .. rvm .. " list strings"
-      data = p.exec_command(cmd,{1},1," +", true)
-   else
-      err = "Could not locate a valid rvm binary"
+   local rvm = get_rvms()
+   local dir = rvm .. "/rubies"
+   if p.file_exists(dir) then
+      return p.lsdir(dir)
    end
-   return data,err
 end
 
 function rvm_gem_list(ruby)
-   -- return gem list of the ruby provided
-   local data,err = ""
+   local out = {}
    local rvm = get_rvms()
-   if not rvm then err = "no rvm" end
-   local rubies = rvm_list_rubies()
-   if not rubies then err = "no rubies" end
-   if not rubies[ruby] then err = "Could not find " .. ruby .. " in rubies" end
+   local dir = rvm .. "/gems/" .. ruby .. "/gems"
 
-   if rvm and rubies and rubies[ruby] then
-      local cmd = "/usr/bin/env " .. rvm .. " " .. rubies[ruby][1] .. " do gem list"
-      data = p.exec_command(cmd,{2},1," +", true)
+   if p.file_exists(dir) then
+      local gems = p.lsdir(dir)
+      for i,g in ipairs(gems) do
+         local gname,gversion  = g:match("([%d%a-_]+)-(%d+%.%d+%.?%d?+?)")
+         if gname and gversion then
+            out[gname] = gversion
+         else
+            print("Breakage in gem name " .. g)
+         end
+      end
    else
-      err = "Got nil on rvm/rubies/rubies[ruby]"
+      err = "Rvm does not have this ruby: " .. ruby .. " installed!"
    end
-   return data,err
+   return out,err
 end
 
-function rvm_bundler_info(ruby)
-   -- Return the bundler specific information on this bundler
-   local list = rvm_gem_list(ruby)
-   local data = list["bundler"]
-
-   print(type(data[1]))
-
-   if data and data[1] and type(data[1]) == "string" then
-      data = data[1]:gsub("[%(%)]","")
-   else
-      local err = "Could not locate bundler gem"
+function rvm_gem_info(ruby,gem)
+   local info = rvm_gem_list(ruby)[gem]
+   if not info then
+      err = "Could not locate gem:" .. gem .. " in ruby: " .. ruby
    end
-   return data,err
+   return info,err
 end
 
 return { pinky_main = pinky_main }
