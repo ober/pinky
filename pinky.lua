@@ -139,9 +139,14 @@ end
 
 function read_file(file)
    local fd = io.open(file, "rb")
-   local guts = fd:read("*all")
-   fd:close()
-   return guts
+   if fd then
+      local guts = fd:read("*all")
+      fd:close()
+   else
+      err = "Could not find " .. file
+   end
+
+   return guts,err
 end
 
 function get_home()
