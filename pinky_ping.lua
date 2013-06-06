@@ -29,7 +29,7 @@ function report_ping(ps)
    if host_os == "Darwin" then
       ping = "/sbin/ping -n -c 1 -W 1 " .. host
    elseif host_os == "Linux" then
-      ping = "/sbin/ping -n -c 1 -w 1 " .. host
+      ping = "/bin/ping -n -c 1 -w 1 " .. host
    end
 
    if ping then
