@@ -39,7 +39,7 @@ function report_ping(ps)
       local success = ' 0%% packet loss,'
       local success_osx = ' 0.0%% packet loss'
       ps.data = ping_out
-      ps.ping_time = ping_out:match("time=(%d+%.%d+)")
+      ps.ping_time = ping_out:match("time=(%d+%.?%d+)")
 
       if ping_out then
          if string.find(ping_out,failure) then
