@@ -1,5 +1,6 @@
 local json = require 'cjson'
 local lfs = require 'lfs'
+local socket = require 'socket'
 
 local debug;
 local dispatch;
@@ -254,7 +255,7 @@ function do_usage(usage_msg,ps)
 end
 
 function init()
-   return { data = {}, status = { value = "OK", error = ""}}
+   return { system = { time = os.time(), name = socket.dns.gethostname() }, data = {}, status = { value = "OK", error = ""}}
 end
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
