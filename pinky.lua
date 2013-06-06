@@ -167,7 +167,7 @@ function get_username()
 end
 
 function get_os()
-   return exec_command("/usr/bin/uname -s",nil,nil," +",false)
+   return exec_command("/usr/bin/env uname -s",nil,nil," +",false)
 end
 
 function find_first_file(files)
