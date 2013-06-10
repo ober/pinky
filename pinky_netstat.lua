@@ -19,7 +19,7 @@ function report_vmstat(ps)
          if #line_array > 1 then
             if line_array[1]:match("^%d+") then
                out[table.concat(line_array,"_",2)] = line_array[1]
-            else
+            elseif line_array[#line_array]:match("^%d+") then
                out[table.concat(line_array,"_",1,#line_array-1):gsub(":","")] = line_array[#line_array]
             end
          end
