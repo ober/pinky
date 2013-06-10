@@ -19,7 +19,7 @@ function report_free(ps)
          if line_array[1]:match("^Mem:") then
             out.noop,out.total,out.used,out.free,out.shared,out.buffers,out.cached = unpack(line_array)
          elseif line_array[1]:match("^-") then
-            out.noop,out.bc_used,out.bc_free = unpack(line_array)
+            out.noop,out.noop,out.bc_used,out.bc_free = unpack(line_array)
          elseif line_array[1]:match("^Swap:") then
             out.noop,out.swap_total,out.swap_used,out.swap_free = unpack(line_array)
          end
