@@ -3,11 +3,30 @@ local p = require 'pinky'
 local pinky_main;
 
 function pinky_main(uri,ps)
-   -- call free(1) -m and return values
-   -- total:1        used:2       free:3     shared:4    buffers:5     cached:6"}
-   ps.data = p.exec_command("/usr/bin/free -m", {1,2,3,4,5,6}, 1, " +", true)
-   ps.data.total = nil
+   -- This function is the entry point.
+   ps.args = p.split(uri,"/")
+   ps = report_free(ps)
+   return ps
+end
 
+function report_free(ps)
+   local out = {}
+   local cmd_out, cmd_err = io.popen("/usr/bin/free -m")
+   print(type(cmd_out))
+   if cmd_out then
+      for line in cmd_out:lines() do
+         local line_array = p.split(line," +")
+         if line_array[1]:match("^Mem:") then
+            out.noop,out.total,out.used,out.free,out.shared,out.buffers,out.cached = unpack(line_array)
+         elseif line_array[1]:match("^-") then
+            out.noop,out.bc_used,out.bc_free = unpack(line_array)
+         elseif line_array[1]:match("^Swap:") then
+            out.noop,out.swap_total,out.swap_used,out.swap_free = unpack(line_array)
+         end
+      end
+   end
+   out.noop = nil
+   ps.data = out
    return ps
 end
 
