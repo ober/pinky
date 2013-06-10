@@ -15,9 +15,14 @@ function report_vmstat(ps)
    local cmd_out, cmd_err = io.popen("/bin/netstat -s")
    if cmd_out then
       for line in cmd_out:lines() do
-        local line_array = p.split(line," +")
-        out[table.concat(line_array,"_",2)] = line_array[1]
-        print("line is " .. line)
+         local line_array = p.split(line," +")
+         if #line_array > 1 then
+            if line_array[1]:match("%d+") then
+               out[table.concat(line_array,"_",2)] = line_array[1]
+            else
+               out[table.concat(line_array,"_",1,#line_array-1):gsub(":","")] = line_array[#line_array]
+            end
+         end
       end
    end
    ps.data = out
