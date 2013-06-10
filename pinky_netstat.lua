@@ -12,7 +12,7 @@ end
 
 function report_vmstat(ps)
    local out = {}
-   local cmd_out, cmd_err = io.popen("/usr/bin/netstat -s")
+   local cmd_out, cmd_err = io.popen("/bin/netstat -s")
    if cmd_out then
       for line in cmd_out:lines() do
         local line_array = p.split(line," +")
