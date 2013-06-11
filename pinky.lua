@@ -144,7 +144,7 @@ function read_file(file)
       local guts = fd:read("*all")
       fd:close()
    else
-      err = "Could not find " .. file
+      local err = "Could not find " .. file
    end
 
    return guts,err
