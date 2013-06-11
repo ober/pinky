@@ -139,9 +139,10 @@ function lsdir (path)
 end
 
 function read_file(file)
+   local guts = ""
    local fd = io.open(file, "rb")
    if fd then
-      local guts = fd:read("*all")
+      guts = fd:read("*all")
       fd:close()
    else
       local err = "Could not find " .. file
