@@ -1,8 +1,10 @@
 local json = require 'cjson'
 local lfs = require 'lfs'
+local socket = require 'socket'
 
 local debug;
 local dispatch;
+local do_error;
 local exec_command;
 local file_exists;
 local find_first_file;
@@ -10,6 +12,7 @@ local get_home;
 local get_ip;
 local get_os;
 local get_username;
+local init;
 local lsdir ;
 local read_file;
 local return_fields;
@@ -84,13 +87,15 @@ end
 
 function dispatch(uri)
    local uri = split(uri,"/")
+   local ps = init()
    local PINKY_HOME = os.getenv("PINKY_HOME") or "/data/pinky-server/vendor/projects/pinky/"
-   local custom_lib = uri[2]
+   local custom_lib = "pinky_" .. uri[2]
    -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
    local short_uri = ""
 
    if #uri < 1 then
-      return  json.encode({ data = {}, status = { value = "FAIL", error = "Unable to find functions in uri" }})
+      ps = do_error("Unable to find functions in uri", ps)
+      -- return  json.encode({ data = {}, status = { value = "FAIL", error =
    end
 
    for I=3,#uri do
@@ -98,23 +103,28 @@ function dispatch(uri)
    end
 
    if not uri[2] then
-      return json.encode({ data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }})
+      ps = do_error("No controller passed.",ps)
+      -- return json.encode({ data = {}, status = { value = "FAIL", error = "uri[2] is nil!" }})
    end
 
-   if file_exists(PINKY_HOME .. "/" .. uri[2] .. ".lua") then
+   if file_exists(PINKY_HOME .. "/" .. custom_lib .. ".lua") then
       local custom_lib = require(custom_lib)
       -- make sure main exists first, then error.
       if type(custom_lib) ~= "table" then
-         return json.encode({ data = {}, status = { value = "FAIL", error = "Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib) }})
+         ps = do_error("Error: type is " .. type(custom_lib) .. " value:" .. tostring(custom_lib),ps)
+         -- return json.encode({ data = {}, status = { value = "FAIL", error =
       end
       if custom_lib.pinky_main then
-         return custom_lib.pinky_main(short_uri)
+         ps = custom_lib.pinky_main(short_uri,ps)
       else
-         return json.encode({ data = {}, status = { value = "FAIL", error = "Could not locate " .. uri[2] .. ".pinky_main" }})
+         ps = do_error("Could not locate " .. uri[2] .. ".pinky_main", ps)
+         -- return json.encode({ data = {}, status = { value = "FAIL", error =  }})
       end
    else
-      return json.encode({ data = {}, status = { value = "FAIL", error = "Error: could not locate " .. custom_lib }})
+      ps = do_error("Error: could not locate " .. custom_lib, ps)
+      -- return json.encode({ data = {}, status = { value = "FAIL", error =  }})
    end
+   return json.encode(ps)
 end
 
 
@@ -129,10 +139,16 @@ function lsdir (path)
 end
 
 function read_file(file)
+   local guts = ""
    local fd = io.open(file, "rb")
-   local guts = fd:read("*all")
-   fd:close()
-   return guts
+   if fd then
+      guts = fd:read("*all")
+      fd:close()
+   else
+      local err = "Could not find " .. file
+   end
+
+   return guts,err
 end
 
 function get_home()
@@ -152,7 +168,7 @@ function get_username()
 end
 
 function get_os()
-   return exec_command("/usr/bin/uname -s",nil,nil," +",false)
+   return exec_command("/usr/bin/env uname -s",nil,nil," +",false)
 end
 
 function find_first_file(files)
@@ -197,13 +213,17 @@ function get_ip(hostname)
 end
 
 function xml_find_tags(xmldata,tags)
-   local xml2 = require 'LuaXml'
+   local out = {}
+   require 'LuaXml'
    local x = xml.eval(xmldata)
-   out = {}
-   for i,t in ipairs(tags) do
-      out[t] = xml.find(x,t)[1]
+   if x then
+      for i,t in ipairs(tags) do
+         out[t] = xml.find(x,t)[1]
+      end
+   else
+     local err = "No xml found"
    end
-   return out
+   return out,err
 end
 
 function print_table(in_table)
@@ -215,11 +235,29 @@ function print_table(in_table)
       if type(k) == "table" then
          k = print_table(k)
       end
+      if type(v) == "function" then
+         v = tostring(v)
+      end
+      if type(k) == "function" then
+         k = tostring(k)
+      end
       out = out .. " " .. k .. " " .. v
    end
    return out
 end
 
+function do_error(error_msg,ps)
+   ps.status.value,ps.status.error  = "FAIL", error_msg
+   return ps
+end
+
+function do_usage(usage_msg,ps)
+
+end
+
+function init()
+   return { system = { time = os.time(), name = socket.dns.gethostname() }, data = {}, status = { value = "OK", error = ""}}
+end
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
 function split(pString, pPattern)
@@ -246,6 +284,7 @@ end
 
 return {
    dispatch = dispatch;
+   do_error = do_error;
    exec_command = exec_command;
    file_exists = file_exists;
    find_first_file = find_first_file;
@@ -253,6 +292,7 @@ return {
    get_ip = get_ip;
    get_os = get_os;
    get_username = get_username;
+   init = init;
    lsdir  = lsdir ;
    print_table = print_table;
    read_file = read_file;

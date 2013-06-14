@@ -1,9 +1,5 @@
 default: tests
 
 tests:
-	@lunit pinky_testcase.lua
-	@for LUA in *.lua; \
- 	do \
- 		@controller=`basename $${LUA} ".lua"`; \
- 		$(HOME)/.luarocks/bin/pinky $$(controller); \
- 	done;
+	@lunit tests.lua
+	ls *.lua|grep -Ev "hello|pinky.lua|proc"|xargs -I"{}" basename {} ".lua"|xargs -n 1 $(HOME)/.luarocks/bin/pinky

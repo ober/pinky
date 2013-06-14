@@ -1,12 +1,10 @@
 local p = require 'pinky'
-local json = require 'cjson'
 local luasql = require "luasql.mysql"
 local yaml = require "lyaml"
 
-local function pinky_main(uri)
+local function pinky_main(uri,ps)
    -- This function is the entry point.
    -- /pinky/mysql/check/host
-   local out = { data = out, status = { value = "", error = ""} }
    local args = p.split(uri,"/")
    -- Arguments:
    -- 0: / return usage
@@ -16,16 +14,15 @@ local function pinky_main(uri)
    -- 3: check
 
    if #args < 1 then
-      out.status.value,out.status.error = "FAIL", "Not enough parameters passed"
+      ps.status = { value = "FAIL", error = "Not enough parameters passed" }
       return out
    end
 
    local host = args[1]
    local config = read_mmtop_config()
-   out = mysql_query(host,config.user,config.password,"test","show slave status")
+   ps.data = mysql_query(host,config.user,config.password,"test","show slave status")
 
-   local out = { data = out, status = { value = "OK", error = ""} }
-   return json.encode(out)
+   return ps
 end
 
 function mysql_connect(host,user,password,db)

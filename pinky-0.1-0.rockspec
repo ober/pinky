@@ -19,21 +19,30 @@ dependencies = {
    "luafilesystem",
    "luasocket",
    "luaposix",
-   "luaxml"
+   "luaxml",
+   "redis-lua"
 }
 build = {
    type = "builtin",
    modules = {
-      disk = "disk.lua",
-      mydb = "mydb.lua",
-      memfree = "memfree.lua",
+      pinky_disk = "pinky_disk.lua",
+      pinky_hello = "pinky_hello.lua",
+      pinky_load = "pinky_load.lua",
+      pinky_memfree = "pinky_memfree.lua",
+      pinky_netstat = "pinky_netstat.lua",
+      pinky_mydb = "pinky_mydb.lua",
+      pinky_net = "pinky_net.lua",
+      pinky_passenger = "pinky_passenger.lua",
+      pinky_ping= "pinky_ping.lua",
       pinky = "pinky.lua",
-      ping= "ping.lua",
-      port  = "port.lua",
-      process  = "process.lua",
-      predis  = "predis.lua",
-      rvm = "rvm.lua",
-      vmstat = "vmstat.lua"
+      pinky_port  = "pinky_port.lua",
+      pinky_redis  = "pinky_redis.lua",
+      pinky_proc = "pinky_proc.lua",
+      pinky_process = "pinky_process.lua",
+      pinky_rvm = "pinky_rvm.lua",
+      pinky_stat = "pinky_stat.lua",
+      pinky_unicorn = "pinky_unicorn.lua",
+      pinky_vmstat = "pinky_vmstat.lua"
    },
    install = {
       bin = { "pinky" }

@@ -1,25 +1,24 @@
 local p = require 'pinky'
-local json = require 'cjson'
 
-local empty;
-local foo;
-local bar;
+local pinky_main
+local empty
+local foo
+local bar
 
-
-local function pinky_main(uri)
+function pinky_main(uri,ps)
    -- This function is the entry point.
    -- We are passed the rest of the uri.
    local args = p.split(uri,"/")
 
    if #args == 0 then
-      return json.encode(empty())
+      ps.data = empty()
    elseif #args == 1 then
-      return json.encode(foo())
+      ps.data = foo()
    elseif #args == 2 then
-      return json.encode(bar())
+      ps.data = bar()
    end
+   return ps
 end
-
 
 function empty()
    return "Hello controller called with no args! (e.g. http://localhost/pinky/hello)"
