@@ -35,7 +35,9 @@ local function pinky_main(uri,ps)
       ps = p.do_error(usage(),ps)
    else
       if args[1] == "up" then
-         ps.data = redis_check()
+         ps = redis_check(ps)
+      elseif args[1] == "monitor" then
+         ps = monitor(ps)
       elseif args[1] == "workers" then
          ps = process_redis("resque:workers",nil,nil,ps)
       elseif args[1] == "queues" then
@@ -46,6 +48,10 @@ local function pinky_main(uri,ps)
          ps = process_redis("resque:loners",nil,nil,ps)
       elseif args[1] == "stat" then
          ps = process_redis("resque:stat",nil,nil,ps)
+      elseif args[1] == "mobile_subscriptions" then
+         ps = process_redis("mobile_subscriptions:*",nil,nil,ps)
+      elseif args[1] == "keys" and #args > 1 then
+         ps = process_keys("mobile_subscriptions:*",nil,nil,ps)
       else
          ps.status.value,ps.status.error = "FAIL", usage()
       end
@@ -56,18 +62,38 @@ end
 function redis_connect(ip,port)
    local ip = ip or '127.0.0.1'
    local port = port or 6379
-   local client = redis.connect(ip,port)
-   return client,"Could not connect to the redis db"
+   local client,err = redis.connect(ip,port)
+   return client,err
 end
 
-function redis_check()
+function redis_check(ps)
    local client,err = redis_connect()
    if err then
-      local response = client:ping()
+      ps.status.value, ps.status.error = "FAIL", err
    else
-      return response
+      if client:ping() then
+         ps.data = "OK! Redis is alive"
+      else
+         ps.status.value,ps.status.error = "FAIL", "Redis is not pingable!"
+      end
    end
+   return ps
 end
+
+
+function monitor(ps)
+   local client,err = redis_connect()
+   if err then
+      ps.status.value, ps.status.error = "FAIL", err
+   else
+      ps.data = {}
+      for k,v in  pairs(client:info()) do
+         ps.data[k] = v
+      end
+   end
+   return ps
+end
+
 
 function handle_list(list,client,parent,ps)
    print("handle_list: list:" .. list .. " parent:" .. parent)
@@ -99,6 +125,7 @@ function handle_string(string,client,parent,ps)
 end
 
 function handle_none(none,client,parent,ps)
+   print("handle_none:" .. tostring(none) .. " client:" .. tostring(client) .. " parent:" .. tostring(parent) .. " ps:" .. tostring(ps))
    ps.data[parent .. none] = client:get(parent .. none)
    return ps
 end
@@ -111,7 +138,7 @@ function process_redis(something,client,parent,ps)
    local parent = parent or ""
    local client = client or redis_connect()
    local type = client:type(something)
-
+   print("type is :" .. type)
    if type == "set" then
       ps = handle_set(something,client,parent,ps)
    elseif type == "list" then
