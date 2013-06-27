@@ -11,7 +11,7 @@ function pinky_main(uri,ps)
          for line in cmd_out:lines() do
             local service = {}
             local line_array = p.split(line," +")
-            service.status,service.service_name, service.noop, service.pid = unpack(line_array)
+            service.status,service.service_name, service.noop, service.pid, service.uptime = unpack(line_array)
             service.noop,service.pid = nil,service.pid:gsub("%)","")
             if table.concat(line_array):match("TERM") then
                terms[service.status] = line_array
