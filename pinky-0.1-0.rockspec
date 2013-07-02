@@ -28,6 +28,7 @@ build = {
       pinky_disk = "pinky_disk.lua",
       pinky_hello = "pinky_hello.lua",
       pinky_load = "pinky_load.lua",
+      pinky_memcache = "pinky_memcache.lua",
       pinky_memfree = "pinky_memfree.lua",
       pinky_netstat = "pinky_netstat.lua",
       pinky_mydb = "pinky_mydb.lua",
