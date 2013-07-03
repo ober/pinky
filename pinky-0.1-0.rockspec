@@ -16,6 +16,7 @@ dependencies = {
    "lua-cjson ~> 2.1.0-1",
    "luasql-mysql",
    "lyaml",
+   "luadate",
    "luafilesystem",
    "luasocket",
    "luaposix",
