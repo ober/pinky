@@ -13,7 +13,7 @@ function pinky_main(file,ps)
    -- The only argument we take is the full path to a single file.
 
    if file and file ~= "" then
-      ps = read_file(file,ps,10000000)
+      ps = read_file(file,ps,10)
    else
       ps = p.do_error("Usage: /pinky/stat/some/path/to/a/file", ps)
    end
