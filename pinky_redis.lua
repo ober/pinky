@@ -36,12 +36,16 @@ local function pinky_main(uri,ps)
    else
       if args[1] == "up" then
          ps = redis_check(ps)
-      elseif args[1] == "monitor" then
-         ps = monitor(ps)
-      elseif args[1] == "workers" then
-         ps = process_redis("resque:workers",nil,nil,ps)
+      elseif args[1] == "info" then
+         ps = info(ps)
+      -- elseif args[1] == "monitor" then -- Maybe later. can be dangerous
+      --    ps = monitor(ps)
+      elseif args[1] == "slowlog" then
+         ps = slowlog(ps)
       elseif args[1] == "queues" then
          ps = process_redis("resque:queues",nil,nil,ps)
+      elseif args[1] == "workers" then
+         ps = process_redis("resque:workers",nil,nil,ps)
       elseif args[1] == "failed" then
          ps = process_redis("resque:failed",nil,nil,ps)
       elseif args[1] == "loners" then
@@ -80,8 +84,17 @@ function redis_check(ps)
    return ps
 end
 
+function slowlog(ps)
+   local client,err = redis_connect()
+   if err then
+      ps.status.value, ps.status.error = "FAIL", err
+   else
+      ps.data = client:slowlog('get',10)
+   end
+   return ps
+end
 
-function monitor(ps)
+function info(ps)
    local client,err = redis_connect()
    if err then
       ps.status.value, ps.status.error = "FAIL", err
@@ -94,6 +107,16 @@ function monitor(ps)
    return ps
 end
 
+-- function monitor(ps)
+--    local client,err = redis_connect()
+--    if err then
+--       ps.status.value, ps.status.error = "FAIL", err
+--    else
+--       ps.data = {}
+--       ps.data = client:monitor()
+--    end
+--    return ps
+-- end
 
 function handle_list(list,client,parent,ps)
    print("handle_list: list:" .. list .. " parent:" .. parent)
