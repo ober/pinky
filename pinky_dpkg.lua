@@ -7,7 +7,7 @@ function pinky_main(uri,ps)
 
    local command = "/usr/lib/update-notifier/apt-check --human-readable -p"
    local ps.data = p.exec_command(cmd)
-Add    return ps
+   return ps
 end
 
 
