@@ -5,8 +5,10 @@ function pinky_main(uri,ps)
    ps.args = p.split(uri,"/")
    -- Arguments:
 
-   local cmd = "/usr/lib/update-notifier/apt-check --human-readable -p 2>&1"
-   ps.data = p.exec_command(cmd,nil,1," +",true)
+   local cmd1 = "/usr/lib/update-notifier/apt-check --human-readable 2>&1"
+   -- local cmd2 = "/usr/lib/update-notifier/apt-check -p 2>&1"
+   ps.data.updates = p.exec_command(cmd1,{1} ,4," +",true)
+   -- ps.data.packages = p.exec_command(cmd2,{1} ,1," +",true)
    return ps
 end
 
