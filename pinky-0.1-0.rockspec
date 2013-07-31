@@ -27,6 +27,7 @@ build = {
    type = "builtin",
    modules = {
       pinky_disk = "pinky_disk.lua",
+      pinky_dpkg = "pinky_dpkg.lua",
       pinky_hello = "pinky_hello.lua",
       pinky_load = "pinky_load.lua",
       pinky_log = "pinky_log.lua",
