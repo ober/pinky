@@ -5,7 +5,7 @@ function pinky_main(uri,ps)
    ps.args = p.split(uri,"/")
    -- Arguments:
 
-   local command = "/usr/lib/update-notifier/apt-check --human-readable -p"
+   local cmd = "/usr/lib/update-notifier/apt-check --human-readable -p"
    ps.data = p.exec_command(cmd)
    return ps
 end
