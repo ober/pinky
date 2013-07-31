@@ -6,7 +6,7 @@ function pinky_main(uri,ps)
    -- Arguments:
 
    local cmd = "/usr/lib/update-notifier/apt-check --human-readable -p 2>&1"
-   ps.data = p.exec_command(cmd)
+   ps.data. = p.exec_command(cmd,{1},1, " +", true)
    return ps
 end
 
