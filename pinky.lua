@@ -282,6 +282,11 @@ function split(pString, pPattern)
    return Table
 end
 
+-- Provide chomp
+function chomp(s)
+   return gsub(s,"\n$", "")
+end
+
 return {
    dispatch = dispatch;
    do_error = do_error;
