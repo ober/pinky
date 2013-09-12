@@ -14,17 +14,18 @@ function pinky_main(file,ps)
    if not ps.minutes then ps.minutes = 10 end
    -- ps.file = file
 
-   if file -- or file == ""
-   --ps = p.do_error("Usage: /pinky/nginx/some/path/to/a/file", ps)
-   --end
-
-   if p.file_exists(file) then
+   if not file or file == "" then
+      ps = p.do_error("Usage: /pinky/nginx/some/path/to/a/file", ps)
    end
+
+   if not p.file_exists(file) then
+      ps = p.do_error("File not found", ps)
+   else
    ps.handle = io.input(file)
 
-   ps = find_pose_for_zone(ps)
+   ps = find_pos_for_zone(ps)
    ps = read_lines_at_offset(ps)
-
+   end
    return ps
 end
 
@@ -39,7 +40,7 @@ function find_pos_for_zone(ps)
       -- seek half the distance each pass until we find something. If
       -- we are too close to end we just give up and return end.
       -- read a line,
-      ps.handle:seek("set", size_of_file/2)
+      ps.handle:seek("set", ps.handle:seek("end")/2)
       local _, _ = ps.handle:read(BUFSIZE, "*line")
       if are_we_in_the_zone() then
          ps.found_position = ps.handle:seek("cur")
@@ -60,6 +61,13 @@ function are_we_in_the_zone(line_date_time, current_time, minutes)
    end
 end
 
+function get_time_for_current_line(lines)
+   local _,_,_,ld,_ = unpack(p.split(lines," +"))
+   ld = ld:gsub("%[","")
+   local lt = {}
+   local lf = p.split(ld,":")
+end
+
 function read_lines_at_offset(ps)
    local BUFSIZE = 2^13 -- 8K
    -- local f = io.input(file) -- open input file
@@ -72,13 +80,7 @@ function read_lines_at_offset(ps)
          local lines, rest = ps.handle:read(BUFSIZE, "*line")
          if not lines then break end
          if rest then lines = lines .. rest .. '\n' end
-         local _,_,_,ld,_ = unpack(p.split(lines," +"))
-         -- 127.0.0.1 - - [18/Jun/2013:08:57:06 +0000] "GET /up/sms HTTP/1.1" 499 0 "-" "curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3"
-         ld = ld:gsub("%[","")
-         local lt = {}
-         local lf = p.split(ld,":")
-         lt.date,lt.hour,lt.minute,lt.second = unpack(lf)
-         p.print_table(lt)
+         local ldate = get_time_for_current_line(lines)
          local ldate = date(lt.date .. " " .. tostring(lt.hour) .. ":" .. tostring(lt.minute) .. ":" .. tostring(lt.second))
          local sdate = date(ps.system.time)
          local c = date.diff(sdate, ldate)
