@@ -17,7 +17,7 @@ function read_file(file)
    local text = ""
    if p.file_exists(file) then
       local f = io.open(file, "r")
-      local text = chomp(f:read("*a"))
+      local text = p.chomp(f:read("*a"))
    end
    return text
 end
