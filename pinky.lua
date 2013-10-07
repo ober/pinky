@@ -285,7 +285,7 @@ end
 
 -- Provide chomp
 function chomp(s)
-   return gsub(s,"\n$", "")
+   return s:gsub(s,"\n$", "")
 end
 
 return {
