@@ -14,18 +14,21 @@ function pinky_main(file,ps)
    if not ps.minutes then ps.minutes = 10 end
    -- ps.file = file
 
-   if not file or file == "" then
-      ps = p.do_error("Usage: /pinky/nginx/some/path/to/a/file", ps)
-   end
+   -- if not file or file == "" then
+   --    ps = p.do_error("Usage: /pinky/nginx/some/path/to/a/file", ps)
+   -- end
 
-   if not p.file_exists(file) then
-      ps = p.do_error("File not found", ps)
-   else
-   ps.handle = io.input(file)
+   -- if not p.file_exists(file) then
+   --    ps = p.do_error("File not found", ps)
+   -- else
+   -- ps.handle = io.input(file)
 
-   ps = find_pos_for_zone(ps)
-   ps = read_lines_at_offset(ps)
-   end
+   -- ps = find_pos_for_zone(ps)
+   -- ps = read_lines_at_offset(ps)
+   -- end
+   ps = read_file(ps)
+
+
    return ps
 end
 
@@ -80,6 +83,7 @@ function read_lines_at_offset(ps)
          local lines, rest = ps.handle:read(BUFSIZE, "*line")
          if not lines then break end
          if rest then lines = lines .. rest .. '\n' end
+
          local ldate = get_time_for_current_line(lines)
          local ldate = date(lt.date .. " " .. tostring(lt.hour) .. ":" .. tostring(lt.minute) .. ":" .. tostring(lt.second))
          local sdate = date(ps.system.time)
@@ -91,7 +95,7 @@ function read_lines_at_offset(ps)
    end
 end
 
-function read_file(ps,offset)
+function read_file(ps)
    if not minutes then minutes = 100 end
    if p.file_exists(file) then
       local BUFSIZE = 2^13 -- 8K
