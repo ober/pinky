@@ -26,6 +26,7 @@ dependencies = {
 build = {
    type = "builtin",
    modules = {
+      pinky_chef = "pinky_chef.lua",
       pinky_disk = "pinky_disk.lua",
       pinky_dpkg = "pinky_dpkg.lua",
       pinky_ec2meta = "pinky_ec2meta.lua",
