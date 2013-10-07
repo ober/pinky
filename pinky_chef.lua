@@ -25,8 +25,6 @@ end
 -- function get_app_version(app)
 -- end
 
-
-
 -- function get_chef_version()
 -- end
 
