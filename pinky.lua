@@ -3,6 +3,7 @@ local lfs = require 'lfs'
 local socket = require 'socket'
 
 local debug;
+local chomp;
 local dispatch;
 local do_error;
 local exec_command;
@@ -289,6 +290,7 @@ end
 
 return {
    dispatch = dispatch;
+   chomp = chomp;
    do_error = do_error;
    exec_command = exec_command;
    file_exists = file_exists;
