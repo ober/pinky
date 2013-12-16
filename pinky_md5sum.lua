@@ -32,12 +32,8 @@ end
 
 
 function md5sum_file(file,ps)
-   if p.file_exists(file) then
-      local cmd_out, cmd_err = io.popen("/usr/bin/sudo /usr/bin/md5sum " .. file)
-      ps.data = lfs.attributes(file)
-   else
-      ps.status.value,ps.status.error = "FAIL", "File does exist!"
-   end
+   local cmd_out, cmd_err = io.popen("/usr/bin/sudo /usr/bin/md5sum " .. file)
+   ps.data = lfs.attributes(file)
    return ps
 end
 
