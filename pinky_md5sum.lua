@@ -21,7 +21,7 @@ function pinky_main(file,ps)
       if file_to_md5 and file_to_md5 ~= "" then
          ps = md5sum_file(file_to_md5,ps)
       else
-         ps = ps.do_error("The file passed is not currently supported.")
+         ps = p.do_error("The file passed is not currently supported.")
       end
    else
       ps = p.do_error("Usage: /pinky/md5sum/some/path/to/a/file", ps)
