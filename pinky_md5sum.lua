@@ -33,7 +33,13 @@ end
 
 function md5sum_file(file,ps)
    local cmd_out, cmd_err = io.popen("/usr/bin/sudo /usr/bin/md5sum " .. file)
-   ps.data = lfs.attributes(file)
+
+   if cmd_err then
+      ps.status.error,ps.status.value = cmd_err, "FAIL"
+   else
+      ps.data = cmd_out
+   end
+
    return ps
 end
 
