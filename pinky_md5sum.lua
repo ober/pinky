@@ -37,7 +37,7 @@ function md5sum_file(file,ps)
    if cmd_err then
       ps.status.error,ps.status.value = cmd_err, "FAIL"
    else
-      ps.data = cmd_out
+      ps.data = tostring(cmd_out)
    end
 
    return ps
