@@ -9,6 +9,7 @@ local do_error;
 local exec_command;
 local file_exists;
 local find_first_file;
+local find_file_in_array;
 local get_home;
 local get_ip;
 local get_os;
@@ -303,6 +304,7 @@ return {
    do_error = do_error;
    exec_command = exec_command;
    file_exists = file_exists;
+   find_file_in_array = find_file_in_array;
    find_first_file = find_first_file;
    get_home = get_home;
    get_ip = get_ip;
