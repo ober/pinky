@@ -181,6 +181,15 @@ function find_first_file(files)
    end
 end
 
+function find_file_in_array(array,find_file)
+   for file = 1, #array do
+      if array[file] == find_file then
+         return array[file]
+      end
+   end
+   return nil
+end
+
 function treewalker(path)
     for file in lfs.dir(path) do
         if file ~= "." and file ~= ".." then
