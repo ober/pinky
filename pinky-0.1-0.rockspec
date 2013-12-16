@@ -36,6 +36,7 @@ build = {
       pinky_memcache = "pinky_memcache.lua",
       pinky_memfree = "pinky_memfree.lua",
       pinky_netstat = "pinky_netstat.lua",
+      pinky_md5sum = "pinky_md5sum.lua",
       pinky_mydb = "pinky_mydb.lua",
       pinky_net = "pinky_net.lua",
       pinky_nginx = "pinky_nginx.lua",
