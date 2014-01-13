@@ -5,23 +5,9 @@ local yaml = require "lyaml"
 local function pinky_main(uri,ps)
    -- This function is the entry point.
    -- /pinky/mysql/check/host
-   local args = p.split(uri,"/")
-   -- Arguments:
-   -- 0: / return usage
-   -- 1: mysql
-   -- 2: db server
-   -- 4: database name
-   -- 3: check
-
-   if #args < 1 then
-      ps.status = { value = "FAIL", error = "Not enough parameters passed" }
-      return out
-   end
-
-   local host = args[1]
+   --
    local config = read_mmtop_config()
-   ps.data = mysql_query(host,config.user,config.password,"test","show slave status")
-
+   ps.data = mysql_query(host,config.user,config.password,"test","show global status")
    return ps
 end
 
@@ -46,11 +32,7 @@ function mysql_query(host,user,password,db,query)
 end
 
 function read_mmtop_config()
-   local home = os.getenv("HOME")
-   if not home then
-      home = "/home/ubuntu/"
-   end
-   return yaml.load(p.read_file(home .. "/.mmtop_config"))
+   return yaml.load(p.read_file("/data/pinky-server/.mmtop_config"))
 end
 
 return { pinky_main = pinky_main }
