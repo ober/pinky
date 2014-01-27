@@ -1,13 +1,13 @@
 local p = require 'pinky'
 local luasql = require "luasql.mysql"
-local yaml = require "lyaml"
+--local yaml = require "lyaml"
 
 local function pinky_main(uri,ps)
    -- This function is the entry point.
    -- /pinky/mysql/check/host
    --
-   local config = read_mmtop_config()
-   ps.data = mysql_query(host,config.user,config.password,"test","show global status")
+   -- local config = read_mmtop_config()
+   ps.data = mysql_query("localhost","mmtop","lalala","test","show global status")
    return ps
 end
 
@@ -26,13 +26,16 @@ function mysql_query(host,user,password,db,query)
    while row do
       table.insert(out,row)
       -- reusing the table of results
-      row = cur:fetch (row, "a")
+      row = cur:fetch ({}, "a")
    end
+
+   cur:close()
+   con:close()
    return out
 end
 
-function read_mmtop_config()
-   return yaml.load(p.read_file("/data/pinky-server/.mmtop_config"))
-end
+-- function read_mmtop_config()
+--    return yaml.load(p.read_file("/data/pinky-server/.mmtop_config"))
+-- end
 
 return { pinky_main = pinky_main }
