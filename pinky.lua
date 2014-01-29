@@ -11,6 +11,7 @@ local file_exists;
 local find_first_file;
 local find_file_in_array;
 local get_home;
+local get_localname;
 local get_ip;
 local get_os;
 local get_username;
@@ -192,25 +193,25 @@ function find_file_in_array(array,find_file)
 end
 
 function treewalker(path)
-    for file in lfs.dir(path) do
-        if file ~= "." and file ~= ".." then
-            local f = path..'/'..file
-            print ("\t "..f)
-            local attr = lfs.attributes (f)
-            assert (type(attr) == "table")
-            if attr.mode == "directory" then
-                treewalker (f)
-            else
-                for name, value in pairs(attr) do
-                    print (name, value)
-                end
+   for file in lfs.dir(path) do
+      if file ~= "." and file ~= ".." then
+         local f = path..'/'..file
+         print ("\t "..f)
+         local attr = lfs.attributes (f)
+         assert (type(attr) == "table")
+         if attr.mode == "directory" then
+            treewalker (f)
+         else
+            for name, value in pairs(attr) do
+               print (name, value)
             end
-        end
-    end
+         end
+      end
+   end
 end
 
 function trim(s)
-  return (s:gsub("^%s*(.-)%s*$", "%1"))
+   return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
 function get_ip(hostname)
@@ -232,7 +233,7 @@ function xml_find_tags(xmldata,tags)
          out[t] = xml.find(x,t)[1]
       end
    else
-     local err = "No xml found"
+      local err = "No xml found"
    end
    return out,err
 end
@@ -266,8 +267,20 @@ function do_usage(usage_msg,ps)
 
 end
 
+function get_localname()
+   local pconfig = "/data/pinky-server/pinky.yml"
+   local name = ""
+   if file_exists(pconfig) then
+      local yaml = require "lyaml"
+      local config = yaml.load(p.read_file(pconfig))
+      return config.hostname
+   else
+      return socket.dns.gethostname()
+   end
+end
+
 function init()
-   return { system = { time = os.time(), name = socket.dns.gethostname() }, data = {}, status = { value = "OK", error = ""}}
+   return { system = { time = os.time(), name = get_localname()  }, data = {}, status = { value = "OK", error = ""}}
 end
 
 -- cribbed from http://stackoverflow.com/questions/1426954/split-string-in-luac
@@ -307,6 +320,7 @@ return {
    find_file_in_array = find_file_in_array;
    find_first_file = find_first_file;
    get_home = get_home;
+   get_localname = get_localname;
    get_ip = get_ip;
    get_os = get_os;
    get_username = get_username;

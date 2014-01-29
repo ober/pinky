@@ -5,7 +5,6 @@ local OS = p.get_os()
 
 module( "p_testcase", lunit.testcase, package.seeall )
 
-
 function setup()
    test_table = {}
    test_table.Alpha = { "A1", "B1", "C1", "D1", "E1" }
