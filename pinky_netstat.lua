@@ -5,12 +5,12 @@ function pinky_main(uri,ps)
    ps.args = p.split(uri,"/")
    -- Arguments:
 
-   ps = report_vmstat(ps)
+   ps = report_netstat(ps)
    return ps
 end
 
 
-function report_vmstat(ps)
+function report_netstat(ps)
    local out = {}
    local cmd_out, cmd_err = io.popen("/bin/netstat -s")
    if cmd_out then
