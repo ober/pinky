@@ -92,14 +92,14 @@ function dispatch(uri)
    local uri = split(uri,"/")
    local ps = init()
    local PINKY_HOME = "/data/pinky-server/vendor/projects/pinky/"
-   local custom_lib = "pinky_" .. uri[2]
-   -- local custom_lib = PINKY_HOME .. "/" .. uri[2] .. ".lua"
    local short_uri = ""
 
    if #uri < 1 then
       ps = do_error("Unable to find functions in uri", ps)
       -- return  json.encode({ data = {}, status = { value = "FAIL", error =
    end
+
+   local custom_lib = "pinky_" .. uri[2]
 
    for I=3,#uri do
       short_uri = short_uri .. "/" .. uri[I]
