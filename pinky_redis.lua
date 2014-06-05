@@ -24,6 +24,7 @@ Valid URLS:
 /pinky/redis/failed  -- Return resque failed job information. (max 2k)
 /pinky/redis/stat  -- Return resque stat entries
 /pinky/redis/loners  -- Return resque loners job entries
+/pinky/redis/cmds  -- Return stats for commands run
 ]];
 end
 
@@ -38,8 +39,10 @@ local function pinky_main(uri,ps)
          ps = redis_check(ps)
       elseif args[1] == "info" then
          ps = info(ps)
-      -- elseif args[1] == "monitor" then -- Maybe later. can be dangerous
-      --    ps = monitor(ps)
+      elseif args[1] == "cmds" then
+         ps = cmds(ps)
+	 -- elseif args[1] == "monitor" then -- Maybe later. can be dangerous
+	 --    ps = monitor(ps)
       elseif args[1] == "slowlog" then
          ps = slowlog(ps)
       elseif args[1] == "queues" then
@@ -90,6 +93,19 @@ function slowlog(ps)
       ps.status.value, ps.status.error = "FAIL", err
    else
       ps.data = client:slowlog('get',10)
+   end
+   return ps
+end
+
+function cmds(ps)
+   local client,err = redis_connect()
+   if err then
+      ps.status.value, ps.status.error = "FAIL", err
+   else
+      ps.data = {}
+      for k,v in  pairs(client:info("commandstats")) do
+         ps.data[k] = v
+      end
    end
    return ps
 end
